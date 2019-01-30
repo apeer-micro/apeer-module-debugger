@@ -11,8 +11,11 @@ ipcRenderer.on('selected-folder', (event, paths) => {
     span.textContent = path
     
     fs.readdir(path, (err, files) => {
-        files.forEach(file => {
-            console.log(file)
-        });
+        if(!files.find(x => x=='Dockerfile' || x == 'module_specification.json')){
+            span.textContent = 'This is not an APEER module folder!'
+        }
+        else{
+            span.textContent = path
+        }
     })
 })
