@@ -1,11 +1,11 @@
-# Clone the repository
+## Clone the repository
 git clone https://github.com/apeer-micro/apeer-module-debugger.git
 
-# Go into the repository
+## Go into the repository
 cd apeer-module-debugger
 
-# Install dependencies
+## Install dependencies
 npm install
 
-# Run the app
+## Run the app
 npm start
