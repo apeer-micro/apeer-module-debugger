@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Apeer Module Debugger</title>
+    <link rel="stylesheet" href="home.css">
+</head>
+
+<body>
+    <div id="selectModuleSection">
+        <h3>Select Module Folder</h1>
+        <button id="openFolder">Open Folder</button>
+        <span id="folderSelectError">Error: select folder do not contain apeer module. Try again</span>
+    </div>
+
+    <div id="buildModuleSection">
+        <div style="display: flex; align-items: center">
+            <span>Selected Module Path: </span>
+            <pre id="selectedModulePath"></pre>
+        </div>
+        <hr />
+
+        <button id="btnBuildModule">Build Module</button>
+        <br />        
+        <pre id="buildModuleLog"></pre>
+        
+        <br />
+        <pre id="buildStatus"></pre>
+        <hr />
+    </div>
+
+    <script src="./home.js"></script>
+</body>
+
+</html>

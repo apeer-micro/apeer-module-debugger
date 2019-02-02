@@ -4,12 +4,12 @@ const path = require('path')
 let mainWindow
 
 function createWindow () {
-  mainWindow = new BrowserWindow({width: 800, height: 600})
-  const htmlPath = path.join('src', 'index.html')
+  mainWindow = new BrowserWindow({width: 1200, height: 800})
+  const htmlPath = path.join('src', 'home.html')
   mainWindow.loadFile(htmlPath)
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
   mainWindow.on('closed', function () {
     mainWindow = null
   })
