@@ -1,0 +1,11 @@
+.hide{
+    display: none;
+}
+
+#selectedModulePath {
+    padding-left: 1rem;
+}
+
+#folderSelectError {
+    padding-top: 1rem;
+}
