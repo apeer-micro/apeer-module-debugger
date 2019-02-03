@@ -1,13 +1,9 @@
-#buildModuleSection {
+.hide{
     display: none;
 }
 
 #selectedModulePath {
     padding-left: 1rem;
-}
-
-#folderSelectError {
-    display: none;
 }
 
 #folderSelectError {
