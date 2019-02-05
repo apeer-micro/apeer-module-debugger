@@ -2,6 +2,14 @@
     display: none;
 }
 
+header {
+    background-color: #373737;
+}
+
+.header-title {
+    color: #f3f3f3;
+}
+
 #selectedModulePath {
     padding-left: 1rem;
 }
