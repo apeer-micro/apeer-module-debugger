@@ -17,3 +17,7 @@ header {
 #folderSelectError {
     padding-top: 1rem;
 }
+
+td {
+    min-width: 8rem;
+}

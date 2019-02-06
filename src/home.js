@@ -92,6 +92,8 @@ function readModuleSpec() {
     let multipleFiles = false;
 
     var keys = Object.keys(json.spec.inputs);
+    var tableRef = document.getElementById('inputsTable').getElementsByTagName('tbody')[0];
+
     keys.forEach(x => {
         var input = {
             name: x,
@@ -102,11 +104,8 @@ function readModuleSpec() {
         if (inputType == 'file') {
             multipleFiles = inputType.includes('list[file]') ? true : false;
         }
-
-        html = html + '\n<label>' + x + '</label>' +
-            '\n<input type=' + inputType + '>' +
-            '\n<br/>';
+        
+        var newRow   = tableRef.insertRow(tableRef.rows.length);
+        newRow.innerHTML = '<tr><td><label>' + x + '</label></td>' + '<td><input type=' + inputType + '>' + '</td></tr>';
     });
-
-    document.getElementById('inputsDiv').innerHTML = html;
 }
