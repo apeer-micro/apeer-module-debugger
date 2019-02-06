@@ -88,24 +88,25 @@ function readModuleSpec() {
     var specFile = path.join(moduleFolderPath, 'module_specification.json');
     let rawdata = fs.readFileSync(specFile);
     let json = JSON.parse(rawdata);
-    let html = '';
-    let multipleFiles = false;
 
     var keys = Object.keys(json.spec.inputs);
     var tableRef = document.getElementById('inputsTable').getElementsByTagName('tbody')[0];
 
     keys.forEach(x => {
+        var newRow = tableRef.insertRow(tableRef.rows.length);
+
         var input = {
             name: x,
             type: Object.keys(json.spec.inputs[x])[0].replace(/^type:/g, '')
         };
         inputs.push(input);
         inputType = input.type.includes('file') ? 'file' : 'text';
-        if (inputType == 'file') {
-            multipleFiles = inputType.includes('list[file]') ? true : false;
-        }
-        
-        var newRow   = tableRef.insertRow(tableRef.rows.length);
-        newRow.innerHTML = '<tr><td><label>' + x + '</label></td>' + '<td><input type=' + inputType + '>' + '</td></tr>';
+        multipleFile = input.type.includes('list[file]') ? ' multiple' : ''
+
+        newRow.innerHTML =  '<tr><td><label>' + x + '</label></td>' + '<td><input type=' + inputType + multipleFile + '>' + '</td></tr>';
     });
-}
+
+    console.dir(inputs);
+};
+
+
