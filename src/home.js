@@ -94,19 +94,46 @@ function readModuleSpec() {
 
     keys.forEach(x => {
         var newRow = tableRef.insertRow(tableRef.rows.length);
+        var inputType = 'text';
+        var multipleFile = '';
 
         var input = {
             name: x,
             type: Object.keys(json.spec.inputs[x])[0].replace(/^type:/g, '')
         };
         inputs.push(input);
-        inputType = input.type.includes('file') ? 'file' : 'text';
-        multipleFile = input.type.includes('list[file]') ? ' multiple' : ''
 
-        newRow.innerHTML =  '<tr><td><label>' + x + '</label></td>' + '<td><input type=' + inputType + multipleFile + '>' + '</td></tr>';
+        switch (input.type) {
+            case 'string':
+                inputType = 'text';
+                break;
+            case 'file':
+                inputType = 'file';
+                break;
+            case 'list[file]':
+                inputType = 'file';
+                multipleFile = ' multiple';
+                break;
+            case 'number':
+                inputType = 'number';
+        }
+
+        newRow.innerHTML = '<tr><td><label>' + x + '</label></td>' + '<td><input id="' + input.name + '"type=' + inputType + multipleFile + '>' + '</td></tr>';
     });
 
     console.dir(inputs);
 };
+
+document.getElementById('btnRunModule').onclick = () => {
+    inputs.forEach(input => {
+        if (input.type.includes('file')) {
+            var files = document.getElementById(input.name).files;
+            console.dir(files);
+        } else {
+            var value = document.getElementById(input.name).value;
+            console.dir(value);
+        }
+    });
+}
 
 
