@@ -8,6 +8,8 @@ const buildStatus = Object.freeze({ select: 1, build: 2, run: 3 });
 let moduleFolderPath = '';
 let moduleName = '';
 let inputs = new Array();
+let inputFolder = '';
+let outputFolder = '';
 
 const selectModuleSection = document.getElementById('selectModuleSection');
 const buildModuleSection = document.getElementById('buildModuleSection');
@@ -124,16 +126,53 @@ function readModuleSpec() {
     console.dir(inputs);
 };
 
+document.getElementById('inputFolder').onclick = () => {
+    ipcRenderer.send('open-input-folder');
+}
+
+ipcRenderer.on('input-folder-selected', (event, paths) => {
+    inputFolder = paths[0];
+});
+
+
+document.getElementById('outputFolder').onclick = () => {
+    ipcRenderer.send('open-output-folder');
+}
+
+ipcRenderer.on('output-folder-selected', (event, paths) => {
+    outputFolder = paths[0];
+});
+
+
 document.getElementById('btnRunModule').onclick = () => {
+    var envVariable = '{"WFE_output_params_file":"wfe_module_params_1_1.json"';
     inputs.forEach(input => {
-        if (input.type.includes('file')) {
-            var files = document.getElementById(input.name).files;
-            console.dir(files);
-        } else {
-            var value = document.getElementById(input.name).value;
-            console.dir(value);
+        switch(input.type) {
+            case 'file':
+                var fullpath = document.getElementById(input.name).files[0].path;
+                var fileName = path.basename(fullpath);
+                envVariable = envVariable + ',"' + input.name + '":' + '"/intput/' + fileName + '"';
+                break;
+            case 'list[file]':
+                envVariable = envVariable + ',"' + input.name + '":[';
+                [...document.getElementById(input.name).files].forEach(f => {
+                    var fullpath = f.path;
+                    var fileName = path.basename(fullpath);
+                    envVariable = envVariable + '"/input/' + fileName + '",';
+                });
+                envVariable = envVariable.replace(/,$/g, '');
+                envVariable = envVariable + ']';
+                break;
+            case 'number':
+                var value = document.getElementById(input.name).value;
+                envVariable = envVariable + ',"' + input.name + '":' + value;
         }
     });
+    
+    envVariable = envVariable + '}';
+    var dockerRunCommand = 'docker run -v ' + outputFolder + ':/output -v ' + inputFolder + ':/input:ro -e WFE_INPUT_JSON=\''+ envVariable + '\' ' + moduleName;
+    console.dir(dockerRunCommand);
+    console.dir(envVariable);
 }
 
 
