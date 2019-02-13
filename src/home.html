@@ -35,11 +35,7 @@
 
         <section id="runModuleSection" class="hide">
             <hr />
-            <div class="mt-4">
-                <div class="mb-4">
-                    <span>Select input folder for your module:</span>
-                    <button class="btn btn-primary" id="inputFolder">Input Folder</button>
-                </div>
+            <div class="mt-4 d-flex flex-column">
                 <div class="mb-4">
                     <span>Select inputs of your modules:</span>
                     <table id="inputsTable" class="mt-3">
@@ -47,12 +43,10 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="mb-4">
-                    <span>Select output folder for your module:</span>
-                    <button class="btn btn-primary" id="outputFolder">Output Folder</button>
-                </div>
 
-                <button class="btn btn-primary my-3" id="btnRunModule">Run Module</button>
+                <button class="btn btn-primary my-3 w-50" id="btnRunModule">Run Module</button>
+                <span id="runModuleLog" class="my-2"></span>
+                <div id="runStatus" class="alert my-2 hide" role="alert"></div>
             </div>
         </section>
     </main>

@@ -35,10 +35,10 @@ ipcRenderer.on('selected-folder', (event, paths) => {
 });
 
 document.getElementById('btnBuildModule').onclick = () => {
-    let buildModuleLog =
-        'Building module for the first time might take some time, depending on your internet!\n\n';
+    let buildModuleLog = '';
     this.disabled = true;
     document.getElementById('buildStatus').innerText = 'Building Module...';
+    document.getElementById('runModuleLog').innerText = '';
 
     const dockerBuildCommand = `docker build -t ${moduleName} .`;
     console.log('Docker Build Command', dockerBuildCommand);
@@ -54,8 +54,10 @@ document.getElementById('btnBuildModule').onclick = () => {
         document.getElementById('buildModuleLog').innerText = buildModuleLog;
     });
 
-    child.stderr.on('error', data => {
+    child.stderr.on('data', data => {
         console.error('error', data);
+        buildModuleLog += data;
+        document.getElementById('buildModuleLog').innerText = buildModuleLog;
     });
 
     child.on('exit', data => {
@@ -75,14 +77,12 @@ document.getElementById('btnBuildModule').onclick = () => {
             buildStatusElement.innerText = 'Module Build Failed';
             buildStatusElement.className += ' alert-danger';
         } else {
+            status = buildStatus.run;
             buildStatusElement.innerText = 'Module Build Complete';
             buildStatusElement.className += ' alert-success';
             document.getElementById('runModuleSection').style.display = 'block'
             readModuleSpec()
         }
-
-        status = buildStatus.run;
-        document.getElementById('runModuleSection').style.display = 'block';
     });
 };
 
@@ -93,6 +93,7 @@ function readModuleSpec() {
 
     var keys = Object.keys(json.spec.inputs);
     var tableRef = document.getElementById('inputsTable').getElementsByTagName('tbody')[0];
+    tableRef.innerHTML = '';
 
     keys.forEach(x => {
         var newRow = tableRef.insertRow(tableRef.rows.length);
@@ -122,36 +123,24 @@ function readModuleSpec() {
 
         newRow.innerHTML = '<tr><td><label>' + x + '</label></td>' + '<td><input id="' + input.name + '"type=' + inputType + multipleFile + '>' + '</td></tr>';
     });
-
-    console.dir(inputs);
 };
 
-document.getElementById('inputFolder').onclick = () => {
-    ipcRenderer.send('open-input-folder');
-}
-
-ipcRenderer.on('input-folder-selected', (event, paths) => {
-    inputFolder = paths[0];
-});
-
-
-document.getElementById('outputFolder').onclick = () => {
-    ipcRenderer.send('open-output-folder');
-}
-
-ipcRenderer.on('output-folder-selected', (event, paths) => {
-    outputFolder = paths[0];
-});
-
-
 document.getElementById('btnRunModule').onclick = () => {
+    inputFolder = path.join(moduleFolderPath, 'input');
+    outputFolder = path.join(moduleFolderPath, 'output');
+
+    !fs.existsSync(inputFolder) && fs.mkdirSync(inputFolder);
+    !fs.existsSync(outputFolder) && fs.mkdirSync(outputFolder);
+
     var envVariable = '{"WFE_output_params_file":"wfe_module_params_1_1.json"';
     inputs.forEach(input => {
-        switch(input.type) {
+        switch (input.type) {
             case 'file':
                 var fullpath = document.getElementById(input.name).files[0].path;
                 var fileName = path.basename(fullpath);
                 envVariable = envVariable + ',"' + input.name + '":' + '"/intput/' + fileName + '"';
+                fs.copyFileSync(fullpath, path.join(inputFolder, fileName).toString());
+                // copy file to input folder
                 break;
             case 'list[file]':
                 envVariable = envVariable + ',"' + input.name + '":[';
@@ -159,6 +148,8 @@ document.getElementById('btnRunModule').onclick = () => {
                     var fullpath = f.path;
                     var fileName = path.basename(fullpath);
                     envVariable = envVariable + '"/input/' + fileName + '",';
+                    fs.copyFileSync(fullpath, path.join(inputFolder, fileName).toString());
+                    // copy file to input folder
                 });
                 envVariable = envVariable.replace(/,$/g, '');
                 envVariable = envVariable + ']';
@@ -168,11 +159,40 @@ document.getElementById('btnRunModule').onclick = () => {
                 envVariable = envVariable + ',"' + input.name + '":' + value;
         }
     });
-    
+
     envVariable = envVariable + '}';
-    var dockerRunCommand = 'docker run -v ' + outputFolder + ':/output -v ' + inputFolder + ':/input:ro -e WFE_INPUT_JSON=\''+ envVariable + '\' ' + moduleName;
+    var dockerRunCommand = 'docker run -v ' + outputFolder + ':/output -v ' + inputFolder + ':/input:ro -e WFE_INPUT_JSON=\'' + envVariable + '\' ' + moduleName;
     console.dir(dockerRunCommand);
-    console.dir(envVariable);
+
+    const runstatusElement = document.getElementById('runStatus');
+    let runModuleLog = '';
+    const child = exec(dockerRunCommand, {
+        async: true,
+        maxBuffer: 2000 * 1024
+    });
+
+    child.stdout.on('data', data => {
+        console.log(data);
+        runModuleLog += data;
+        document.getElementById('runModuleLog').innerText = runModuleLog;
+    });
+
+    child.stderr.on('data', function (data) {
+        console.log('stderr: ' + data);
+        runModuleLog += data;
+        document.getElementById('runModuleLog').innerText = runModuleLog;
+        //Here is where the error output goes
+    });
+
+    child.on('exit', code => {
+        runstatusElement.style.display = 'block';
+        if(code == 0) {
+            runstatusElement.innerText = 'Module Ran Successfully';
+            runstatusElement.className += ' alert-success';
+        } else {
+            runstatusElement.innerText = 'Module Run Failed';
+            runstatusElement.className += ' alert-danger';
+        }
+        console.log('exit', code);
+    });
 }
-
-

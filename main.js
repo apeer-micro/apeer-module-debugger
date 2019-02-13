@@ -39,25 +39,3 @@ ipcMain.on('open-folder', event => {
     }
   );
 });
-
-ipcMain.on('open-input-folder', event => {
-  dialog.showOpenDialog(
-    {
-      properties: ['openDirectory']
-    },
-    path => {
-      event.sender.send('input-folder-selected', path);
-    }
-  );
-});
-
-ipcMain.on('open-output-folder', event => {
-  dialog.showOpenDialog(
-    {
-      properties: ['openDirectory']
-    },
-    path => {
-      event.sender.send('output-folder-selected', path);
-    }
-  );
-});
