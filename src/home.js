@@ -1,5 +1,5 @@
-const { ipcRenderer } = require('electron');
-const { exec, spawn } = require('child_process');
+const { ipcRenderer, shell } = require('electron');
+const { exec } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
@@ -27,7 +27,8 @@ ipcRenderer.on('selected-folder', (event, paths) => {
         status = buildStatus.run;
         document.getElementById('folderSelectError').style.display = 'none';
         selectModuleSection.style.display = 'none';
-        buildModuleSection.style.display = 'block';
+        buildModuleSection.style.display = 'flex';
+        buildModuleSection.style.flexDirection = 'column';
         document.getElementById('selectedModulePath').innerText = moduleFolderPath;
     } else {
         document.getElementById('folderSelectError').style.display = 'block';
@@ -129,6 +130,11 @@ document.getElementById('btnRunModule').onclick = () => {
     inputFolder = path.join(moduleFolderPath, 'input');
     outputFolder = path.join(moduleFolderPath, 'output');
 
+    const runstatusElement = document.getElementById('runStatus');
+    runstatusElement.style.display = 'none';
+    runstatusElement.classList.remove("alert-danger");
+    runstatusElement.classList.remove("alert-success");
+
     !fs.existsSync(inputFolder) && fs.mkdirSync(inputFolder);
     !fs.existsSync(outputFolder) && fs.mkdirSync(outputFolder);
 
@@ -164,7 +170,6 @@ document.getElementById('btnRunModule').onclick = () => {
     var dockerRunCommand = 'docker run -v ' + outputFolder + ':/output -v ' + inputFolder + ':/input:ro -e WFE_INPUT_JSON=\'' + envVariable + '\' ' + moduleName;
     console.dir(dockerRunCommand);
 
-    const runstatusElement = document.getElementById('runStatus');
     let runModuleLog = '';
     const child = exec(dockerRunCommand, {
         async: true,
@@ -172,16 +177,13 @@ document.getElementById('btnRunModule').onclick = () => {
     });
 
     child.stdout.on('data', data => {
-        console.log(data);
         runModuleLog += data;
         document.getElementById('runModuleLog').innerText = runModuleLog;
     });
 
     child.stderr.on('data', function (data) {
-        console.log('stderr: ' + data);
         runModuleLog += data;
         document.getElementById('runModuleLog').innerText = runModuleLog;
-        //Here is where the error output goes
     });
 
     child.on('exit', code => {
@@ -189,6 +191,7 @@ document.getElementById('btnRunModule').onclick = () => {
         if(code == 0) {
             runstatusElement.innerText = 'Module Ran Successfully';
             runstatusElement.className += ' alert-success';
+            shell.openItem('folderpath');
         } else {
             runstatusElement.innerText = 'Module Run Failed';
             runstatusElement.className += ' alert-danger';
