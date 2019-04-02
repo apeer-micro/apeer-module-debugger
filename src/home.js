@@ -144,7 +144,7 @@ document.getElementById('btnRunModule').onclick = () => {
             case 'file':
                 var fullpath = document.getElementById(input.name).files[0].path;
                 var fileName = path.basename(fullpath);
-                envVariable = envVariable + ',"' + input.name + '":' + '"/intput/' + fileName + '"';
+                envVariable = envVariable + ',"' + input.name + '":' + '"/input/' + fileName + '"';
                 fs.copyFileSync(fullpath, path.join(inputFolder, fileName).toString());
                 // copy file to input folder
                 break;
