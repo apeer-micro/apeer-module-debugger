@@ -118,8 +118,12 @@ function readModuleSpec() {
                 inputType = 'file';
                 multipleFile = ' multiple';
                 break;
+            case 'integer':
+                inputType = 'integer';
+                break;
             case 'number':
                 inputType = 'number';
+                break;
         }
 
         newRow.innerHTML = '<tr><td><label>' + x + '</label></td>' + '<td><input id="' + input.name + '"type=' + inputType + multipleFile + '>' + '</td></tr>';
@@ -160,9 +164,12 @@ document.getElementById('btnRunModule').onclick = () => {
                 envVariable = envVariable.replace(/,$/g, '');
                 envVariable = envVariable + ']';
                 break;
+            case 'string':
+            case 'integer':
             case 'number':
                 var value = document.getElementById(input.name).value;
                 envVariable = envVariable + ',"' + input.name + '":' + value;
+                break;
         }
     });
 
