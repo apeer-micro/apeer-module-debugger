@@ -142,6 +142,11 @@ document.getElementById('btnRunModule').onclick = () => {
     !fs.existsSync(inputFolder) && fs.mkdirSync(inputFolder);
     !fs.existsSync(outputFolder) && fs.mkdirSync(outputFolder);
 
+    isWin = false;
+    if (/^win/i.test(process.platform)) {
+        isWin = true;
+    } 
+
     var envVariable = '{"WFE_output_params_file":"wfe_module_params_1_1.json"';
     inputs.forEach(input => {
         switch (input.type) {
@@ -175,6 +180,13 @@ document.getElementById('btnRunModule').onclick = () => {
 
     envVariable = envVariable + '}';
     var dockerRunCommand = 'docker run -v ' + outputFolder + ':/output -v ' + inputFolder + ':/input:ro -e WFE_INPUT_JSON=\'' + envVariable + '\' ' + moduleName;
+
+    if(isWin)
+    {
+        dockerRunCommand = escapeDoubleQuotes(dockerRunCommand);
+        dockerRunCommand = dockerRunCommand.replace(/'/g, '"'); // for windows replace single quote to double quotes
+    }
+
     console.dir(dockerRunCommand);
 
     let runModuleLog = '';
@@ -205,4 +217,8 @@ document.getElementById('btnRunModule').onclick = () => {
         }
         console.log('exit', code);
     });
+}
+
+function escapeDoubleQuotes(str) {
+	return str.replace(/\\([\s\S])|(")/g,"\\$1$2");
 }
