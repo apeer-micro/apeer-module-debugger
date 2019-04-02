@@ -26,6 +26,6 @@ Selected input files will be copied to a new "input" folder in your module folde
 
 ## Features backlog
 - Support more input types
-- Add input restriction (such as user should not be able to input beyond the range)
+- Add input restriction (such as user should not be able to input beyond the range and file type restrictions)
 - UI is very primitive right now. UI needs to be better
 - Better error handling
