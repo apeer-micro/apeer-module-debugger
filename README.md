@@ -1,3 +1,6 @@
+Before starting, please install "npm" and "docker"
+(Install npm using: https://www.npmjs.com/get-npm)
+
 ## Clone the repository
 git clone https://github.com/apeer-micro/apeer-module-debugger.git
 
@@ -5,7 +8,6 @@ git clone https://github.com/apeer-micro/apeer-module-debugger.git
 cd apeer-module-debugger
 
 ## Install dependencies
-(Install npm using: https://www.npmjs.com/get-npm)
 npm install
 
 ## Run the app
