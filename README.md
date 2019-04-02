@@ -13,11 +13,11 @@ npm start
 
 
 ## How to Use
-- Make docker is installed (for windows, make sure that you have shared your drive with docker)
+- Make sure docker is installed (for windows, make sure that you have shared your drive with docker)
 - Select your module folder
-- Build module
+- Click on "Build module"
 - Choose the inputs for your module (currently only supports file, number and string inputs)
-- Run module
+- Click on "Run module"
 
 Selected input files will be copied to a new "input" folder in your module folder and the output of your module will be available in "output" folder also in your module folder
 
