@@ -119,8 +119,6 @@ function readModuleSpec() {
                 multipleFile = ' multiple';
                 break;
             case 'integer':
-                inputType = 'integer';
-                break;
             case 'number':
                 inputType = 'number';
                 break;
