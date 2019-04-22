@@ -1,12 +1,4 @@
 body {
-  background-color: #222;
-  /* height: 100vh; */
-  /* background-image: linear-gradient(
-    270deg,
-    rgba(102, 209, 195, 0.7),
-    rgba(55, 138, 203, 0.7)
-  ); */
-  margin: 0;
-  padding: 10px;
+  background-color: #373737;
   font-family: sans-serif;
 }

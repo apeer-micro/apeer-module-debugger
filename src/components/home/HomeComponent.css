@@ -1,0 +1,19 @@
+.header{
+    height: 7rem;
+}
+
+.bottom-line{
+    height: 1px;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    background-image: linear-gradient(to right,#2cd4c3,#008bd0);
+}
+
+.sidebar-button{
+    height: 5rem;
+}
+
+.module-name{
+    font-family: 'Comfortaa', cursive;
+}
