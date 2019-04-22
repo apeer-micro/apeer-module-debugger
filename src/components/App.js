@@ -6,13 +6,10 @@ class App extends Component {
   render() {
     return (
       <div>
-        <div className="app-header">
+        <div className="d-flex">
           <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to Module Debugger</h2>
+          <h2 className="text-white pl-2">Module Debugger</h2>
         </div>
-        <p className="App-intro">
-          This is module debugger!
-        </p>
       </div>
     );
   }
