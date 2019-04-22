@@ -40,7 +40,7 @@ export default class StartComponent extends React.Component {
         </div>
         <div className="d-flex flex-column mt-5">
           <span className="text-white pb-3">
-            Start building modules by opening your module folder!
+           Open your module folder to start building!
           </span>
           <button className="btn btn-light mx-auto" onClick={() => this.openFolder()}>
             Open Module Folder
