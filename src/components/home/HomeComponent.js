@@ -13,7 +13,7 @@ export default class HomeComponent extends React.Component {
               <img src={logo} alt="logo" className="pl-5 pt-5" />
             </div>
             <div className="col-9 pl-0">
-              <h2 className="text-white pt-4 mb-0 mt-3 module-name">{this.props.module.name}</h2>
+              <h2 className="text-white pl-5 pt-4 mb-3 mt-3 module-name">{this.props.module.name}</h2>
             </div>
           </div>
         </div>
