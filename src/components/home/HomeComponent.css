@@ -12,4 +12,6 @@
 
 .module-name{
     font-family: 'Comfortaa', cursive;
+    word-wrap: break-word;
+    max-width: 18rem;
 }

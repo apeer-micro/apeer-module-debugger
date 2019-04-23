@@ -1,13 +1,17 @@
 import React from 'react';
+import Stepper from 'react-js-stepper';
 
 import './HomeComponent.css';
-import logo from '../../assets/logo.svg';
+import logo from '../../assets/logo_gradient_blue_bg.svg';
 const { exec } = window.require('child_process');
+
+const steps = [{ title: 'Build' }, { title: 'Run' }];
 
 export default class HomeComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      activeStep: 1,
       isBuilding: false,
       buildLog: '',
       isBuildSuccess: null,
@@ -18,6 +22,20 @@ export default class HomeComponent extends React.Component {
     this.onBuildButtonClick = this.onBuildButtonClick.bind(this);
     this.onRunTabClick = this.onRunTabClick.bind(this);
   }
+
+  handleOnClickStepper = step => {
+    this.setState({ activeStep: step });
+  };
+
+  handleOnClickNext = () => {
+    let nextStep = this.state.activeStep + 1;
+    this.setState({ activeStep: nextStep });
+  };
+
+  handleOnClickBack = () => {
+    let prevStep = this.state.activeStep - 1;
+    this.setState({ activeStep: prevStep });
+  };
 
   onBuildButtonClick() {
     console.log('build');
@@ -60,19 +78,17 @@ export default class HomeComponent extends React.Component {
   render() {
     return (
       <div>
-        <div className="header container ml-0">
-          <div className="row">
-            <div className="col pl-0">
-              <img src={logo} alt="logo" className="pl-5 pt-5" />
-            </div>
-            <div className="col-9 pl-0">
-              <h2 className="text-white pl-5 pt-4 mb-3 mt-3 module-name">
-                {this.props.module.name}
-              </h2>
-            </div>
-          </div>
-          <div className="bottom-line" />
+        <div className="header align-items-center d-flex">
+          <img src={logo} alt="logo" className="ml-3" />
+          <span className="text-white module-name ml-5">{this.props.module.name}</span>
+          <Stepper 
+            steps={steps}
+            activeStep={this.state.activeStep}
+            onSelect={this.handleOnClickStepper}
+            showNumber={false}
+          />
         </div>
+        <div className="bottom-line" />
         <div className="m-2 d-flex">
           <button className="btn btn-light mb-auto" onClick={this.onBuildButtonClick}>
             Build

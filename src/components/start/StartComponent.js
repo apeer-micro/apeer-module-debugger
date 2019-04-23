@@ -35,13 +35,13 @@ export default class StartComponent extends React.Component {
     return (
       <div className="d-flex justify-content-center text-center flex-column section-start">
         <div>
-          <img src={logo} alt="logo" />
-          <h2 className="text-white header-title">Module Debugger</h2>
+          <img className="logo" src={logo} alt="logo" />
+          <h1 className="text-white header-title">Module Debugger</h1>
         </div>
         <div className="d-flex flex-column mt-5">
-          <span className="text-white pb-3">
+          <h3 className="text-white pb-3">
            Open your module folder to start building!
-          </span>
+          </h3>
           <button className="btn btn-light mx-auto" onClick={() => this.openFolder()}>
             Open Module Folder
           </button>
