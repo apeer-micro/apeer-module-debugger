@@ -1,4 +1,5 @@
 import React from 'react';
+import toastr from 'toastr';
 const { exec } = window.require('child_process');
 
 export default class BuildComponent extends React.Component {
@@ -11,11 +12,10 @@ export default class BuildComponent extends React.Component {
   }
 
   onBuildButtonClick() {
+    toastr.info('Are you the 6 fingered man?')
     const dockerBuildCommand = `docker build -t ${this.props.module.name} .`;
     console.log('Docker Build Command', dockerBuildCommand);
-    let buildState = Object.assign({}, this.state.build);
-    buildState.inProgress = true;
-    this.setState({build: buildState});
+    this.setState({build: { inProgress: true, log: '', isSuccess: null }});
     this.props.onBuildChange(this.state.build);
 
     const child = exec(dockerBuildCommand, {
@@ -60,7 +60,7 @@ export default class BuildComponent extends React.Component {
     return (
       <React.Fragment>
         <div className="m-2 row">
-          <button className="btn btn-light col-2 action-button" onClick={this.onBuildButtonClick}>
+          <button className="btn btn-light col-2 action-button" onClick={this.onBuildButtonClick} disabled={this.state.build.inProgress}>
             Build
           </button>
           <pre className="text-white w-100 col">{this.state.build.log}</pre>

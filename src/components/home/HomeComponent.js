@@ -29,7 +29,6 @@ export default class HomeComponent extends React.Component {
   }
 
   onBuildChange(currentBuildState){
-    console.dir(currentBuildState);
     this.setState({build: currentBuildState});
   }
 
@@ -66,7 +65,7 @@ export default class HomeComponent extends React.Component {
               <pre className="text-white w-100 col">{this.state.run.Log}</pre>
             </div>
           ) : (
-            <span className="text-white m-2 row">Please build the module once to start running it.</span>
+            <span className="text-white m-2 row">Please build the module successfully once to start running it.</span>
           )}
         </React.Fragment>
       );
