@@ -15,3 +15,47 @@
     word-wrap: break-word;
     max-width: 18rem;
 }
+
+.action-button{
+    height: 50px;
+}
+
+.stepper-container{
+    width: 200px;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.run-spinner{
+    position: absolute;
+    top: 0rem;
+    right: 1.1rem;
+    height: 4rem;
+    width: 4rem;
+}
+
+.build-spinner{
+    position: absolute;
+    top: 0rem;
+    right: 7.35rem;
+    height: 4rem;
+    width: 4rem;
+}
+
+.left-icon {
+    position: absolute;
+    top: 1.2rem;
+    right: 10.1rem;
+}
+
+.right-icon{
+    position: absolute;
+    top: 1.2rem;
+    right: 0.7em;
+}
+
+.button-no-style{
+    background: none;
+    border:none;
+}

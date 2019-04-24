@@ -10,7 +10,7 @@
   "dependencies": {
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
-    "react-js-stepper": "^1.2.3"
+    "react-stepper-horizontal": "^1.0.11"
   },
   "homepage": "./",
   "main": "src/electron-starter.js",

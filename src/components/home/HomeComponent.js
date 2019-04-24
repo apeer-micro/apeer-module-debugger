@@ -1,100 +1,110 @@
 import React from 'react';
-import Stepper from 'react-js-stepper';
+import Stepper from 'react-stepper-horizontal'; // https://github.com/mu29/react-stepper
 
 import './HomeComponent.css';
-import logo from '../../assets/logo_gradient_blue_bg.svg';
-const { exec } = window.require('child_process');
-
-const steps = [{ title: 'Build' }, { title: 'Run' }];
+import logo from '../../assets/logo.svg';
+import rightIcon from '../../assets/icons/right.svg';
+import leftIcon from '../../assets/icons/left.svg';
+import BuildComponent from '../build/BuildComponent';
 
 export default class HomeComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 1,
-      isBuilding: false,
-      buildLog: '',
-      isBuildSuccess: null,
-      isRunning: false,
-      runLog: '',
-      isRunSuccess: null
-    };
-    this.onBuildButtonClick = this.onBuildButtonClick.bind(this);
-    this.onRunTabClick = this.onRunTabClick.bind(this);
-  }
-
-  handleOnClickStepper = step => {
-    this.setState({ activeStep: step });
-  };
-
-  handleOnClickNext = () => {
-    let nextStep = this.state.activeStep + 1;
-    this.setState({ activeStep: nextStep });
-  };
-
-  handleOnClickBack = () => {
-    let prevStep = this.state.activeStep - 1;
-    this.setState({ activeStep: prevStep });
-  };
-
-  onBuildButtonClick() {
-    console.log('build');
-    let buildModuleLog = '';
-    const dockerBuildCommand = `docker build -t ${this.props.module.name} .`;
-    console.log('Docker Build Command', dockerBuildCommand);
-
-    const child = exec(dockerBuildCommand, {
-      async: true,
-      cwd: this.props.module.path,
-      maxBuffer: 2000 * 1024
-    });
-
-    child.stdout.on('data', data => {
-      buildModuleLog += data;
-      this.setState({ isBuilding: true, buildLog: buildModuleLog });
-    });
-
-    child.stderr.on('data', data => {
-      console.error('error', data);
-      buildModuleLog += data;
-      this.setState({ isBuilding: false, buildLog: buildModuleLog });
-    });
-
-    child.on('exit', data => {
-      console.log('exit', data);
-      this.setState({ isBuilding: false });
-      if (data == null || data !== 0) {
-        console.log('build failed');
-      } else {
-        console.log('success');
+      activeStep: 0,
+      build: {
+        inProgress: false,
+        log: '',
+        isSuccess: null,
+      },
+      run:{
+        inProgress: false,
+        Log: '',
+        isSuccess: null
       }
-    });
+    };
+    this.onBuildChange = this.onBuildChange.bind(this);
+    this.onClickNext = this.onClickNext.bind(this);
+    this.onClickBack = this.onClickBack.bind(this);
   }
 
-  onRunTabClick() {
-    console.log('run');
+  onBuildChange(currentBuildState){
+    console.dir(currentBuildState);
+    this.setState({build: currentBuildState});
+  }
+
+  onClickNext() {
+    const currentStep = this.state.activeStep;
+    if (currentStep === 0) {
+      this.setState({ activeStep: 1 });
+    }
+  }
+
+  onClickBack() {
+    const currentStep = this.state.activeStep;
+    if (currentStep === 1) {
+      this.setState({ activeStep: 0 });
+    }
   }
 
   render() {
+    let spinner;
+    if(this.state.build.inProgress){
+      spinner = (<div className="spinner-grow text-primary ml-0 build-spinner" role="status" />);
+    }
+    if(this.state.run.inProgress) {
+      spinner = (<div className="spinner-grow text-primary ml-0 run-spinner" role="status" />);
+    }
+
+    let currentTab;
+    if (this.state.activeStep === 1) {
+      currentTab = (
+        <React.Fragment>
+          {this.state.build.isSuccess ? (
+            <div className="m-2 row">
+              <button className="btn btn-light col-2 action-button">Run</button>
+              <pre className="text-white w-100 col">{this.state.run.Log}</pre>
+            </div>
+          ) : (
+            <span className="text-white m-2 row">Please build the module once to start running it.</span>
+          )}
+        </React.Fragment>
+      );
+    } else {
+      currentTab = (
+        <BuildComponent build={this.state.build} module={this.props.module} onBuildChange={this.onBuildChange}/>
+      );
+    }
+
     return (
       <div>
         <div className="header align-items-center d-flex">
           <img src={logo} alt="logo" className="ml-3" />
           <span className="text-white module-name ml-5">{this.props.module.name}</span>
-          <Stepper 
-            steps={steps}
-            activeStep={this.state.activeStep}
-            onSelect={this.handleOnClickStepper}
-            showNumber={false}
-          />
+          <div className="stepper-container">
+            <Stepper
+              activeColor="#008bd0"
+              completeColor="white"
+              circleFontSize={0}
+              activeTitleColor="white"
+              completeTitleColor="white"
+              defaultTitleColor="white"
+              completeBarColor="white"
+              size={16}
+              steps={[{ title: 'Build' }, { title: 'Run' }]}
+              activeStep={this.state.activeStep}
+            />
+            {spinner}
+            <button className="left-icon button-no-style" onClick={this.onClickBack} disabled={this.state.build.inProgress || this.state.run.inProgress}>
+              <img src={leftIcon} alt="lefticon" />
+            </button>
+            <button className="right-icon button-no-style" onClick={this.onClickNext} disabled={this.state.build.inProgress || this.state.run.inProgress}>
+              <img src={rightIcon} alt="righticon" />
+            </button>
+          </div>
         </div>
         <div className="bottom-line" />
-        <div className="m-2 d-flex">
-          <button className="btn btn-light mb-auto" onClick={this.onBuildButtonClick}>
-            Build
-          </button>
-          <pre className="text-white w-100 ml-3">{this.state.buildLog}</pre>
-        </div>
+        {currentTab}
       </div>
     );
   }
