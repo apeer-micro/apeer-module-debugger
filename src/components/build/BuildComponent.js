@@ -1,5 +1,4 @@
 import React from 'react';
-import toastr from 'toastr';
 const { exec } = window.require('child_process');
 
 export default class BuildComponent extends React.Component {
@@ -12,7 +11,6 @@ export default class BuildComponent extends React.Component {
   }
 
   onBuildButtonClick() {
-    toastr.info('Are you the 6 fingered man?')
     const dockerBuildCommand = `docker build -t ${this.props.module.name} .`;
     console.log('Docker Build Command', dockerBuildCommand);
     this.setState({build: { inProgress: true, log: '', isSuccess: null }});
