@@ -6,6 +6,7 @@ import logo from '../../assets/logo.svg';
 import rightIcon from '../../assets/icons/right.svg';
 import leftIcon from '../../assets/icons/left.svg';
 import BuildComponent from '../build/BuildComponent';
+import RunComponent from '../run/RunComponent';
 
 export default class HomeComponent extends React.Component {
   constructor(props) {
@@ -24,12 +25,17 @@ export default class HomeComponent extends React.Component {
       }
     };
     this.onBuildChange = this.onBuildChange.bind(this);
+    this.onRunChange = this.onRunChange.bind(this);
     this.onClickNext = this.onClickNext.bind(this);
     this.onClickBack = this.onClickBack.bind(this);
   }
 
   onBuildChange(currentBuildState){
     this.setState({build: currentBuildState});
+  }
+
+  onRunChange(currentRunState){
+    this.setState({run: currentRunState});
   }
 
   onClickNext() {
@@ -58,16 +64,7 @@ export default class HomeComponent extends React.Component {
     let currentTab;
     if (this.state.activeStep === 1) {
       currentTab = (
-        <React.Fragment>
-          {this.state.build.isSuccess ? (
-            <div className="m-2 row">
-              <button className="btn btn-light col-2 action-button">Run</button>
-              <pre className="text-white w-100 col">{this.state.run.Log}</pre>
-            </div>
-          ) : (
-            <span className="text-white m-2 row">Please build the module successfully once to start running it.</span>
-          )}
-        </React.Fragment>
+        <RunComponent buildState={this.state.build.isSuccess} run={this.state.run} module={this.props.module} onRunChange={this.onRunChange} />
       );
     } else {
       currentTab = (
@@ -76,7 +73,7 @@ export default class HomeComponent extends React.Component {
     }
 
     return (
-      <div>
+      <React.Fragment>
         <div className="header align-items-center d-flex">
           <img src={logo} alt="logo" className="ml-3" />
           <span className="text-white module-name ml-5">{this.props.module.name}</span>
@@ -104,7 +101,7 @@ export default class HomeComponent extends React.Component {
         </div>
         <div className="bottom-line" />
         {currentTab}
-      </div>
+      </React.Fragment>
     );
   }
 }
