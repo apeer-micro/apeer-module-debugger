@@ -1,13 +1,11 @@
 import React from 'react';
 import path from 'path';
-
 const fs = window.require('fs');
 
-export default class ModuleSpecComponent extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+import './ModuleSpecComponent.css';
 
+//Module spec
+export default class ModuleSpecComponent extends React.Component {
   createForm() {
     var specFile = path.join(this.props.module.path, 'module_specification.json');
     let rawData = fs.readFileSync(specFile);
@@ -19,13 +17,10 @@ export default class ModuleSpecComponent extends React.Component {
         name: x,
         type: Object.keys(json.spec.inputs[x])[0].replace(/^type:/g, '')
       };
-      let inputType = 'text';
+      let inputType;
       let multipleFile = false;
 
       switch (input.type) {
-        case 'string':
-          inputType = 'text';
-          break;
         case 'file':
           inputType = 'file';
           break;
@@ -37,17 +32,36 @@ export default class ModuleSpecComponent extends React.Component {
         case 'number':
           inputType = 'number';
           break;
+        case 'string':
+        default:
+          inputType = 'text';
+          break;
       }
 
       return (
-        <label className="text-white">
-          {input.name}
-          <input type={inputType} name={input.name} />
-        </label>
+        <div className="form-group" key={input.name}>
+          <label className="text-white">{input.name}</label>
+          {inputType === 'file' ? (
+            <input
+              type={inputType}
+              name={input.name}
+              id={input.name}
+              multiple={multipleFile}
+              className="form-control-file text-white"
+            />
+          ) : (
+            <input type={inputType} name={input.name} id={input.name} className="form-control" />
+          )}
+        </div>
       );
     });
 
-    return <form>{spec}</form>;
+    return (
+      <React.Fragment>
+        <form className="d-flex flex-column module-inputs">{spec}</form>
+        <button className="btn btn-primary mt-5 btn-run">Run</button>
+      </React.Fragment>
+    );
   }
 
   render() {
