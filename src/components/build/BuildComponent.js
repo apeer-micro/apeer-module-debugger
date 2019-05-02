@@ -58,7 +58,7 @@ export default class BuildComponent extends React.Component {
     return (
       <React.Fragment>
         <div className="m-2 row">
-          <button className="btn btn-light col-2 action-button" onClick={this.onBuildButtonClick} disabled={this.state.build.inProgress}>
+          <button className="btn btn-primary col-2 action-button" onClick={this.onBuildButtonClick} disabled={this.state.build.inProgress}>
             Build
           </button>
           <pre className="text-white w-100 col">{this.state.build.log}</pre>
