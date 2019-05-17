@@ -8,6 +8,7 @@
     "react-scripts": "0.8.5"
   },
   "dependencies": {
+    "fs-extra": "^8.0.1",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
     "react-stepper-horizontal": "^1.0.11"

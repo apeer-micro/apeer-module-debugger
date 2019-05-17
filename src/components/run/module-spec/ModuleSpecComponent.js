@@ -6,26 +6,52 @@ import './ModuleSpecComponent.css';
 
 //Module spec
 export default class ModuleSpecComponent extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
+    let inputs = this.setupInputs();
+    this.state = {
+      inputs: inputs
+    };
     this.onClick = this.onClick.bind(this);
   }
 
   onClick() {
-    this.props.onRunButtonClick();
+    const inputs = this.state.inputs.map(input => {
+      let value;
+      switch (input.type) {
+        case 'file':
+        case 'list[file]':
+          value = document.getElementById(input.name).files;
+          break;
+        default:
+          value = document.getElementById(input.name).value;
+      }
+      return {
+        name: input.name,
+        type: input.type,
+        value: value
+      }
+    });
+
+    this.props.onRunButtonClick(inputs);
   }
 
-  createForm() {
+  setupInputs() {
     var specFile = path.join(this.props.module.path, 'module_specification.json');
     let rawData = fs.readFileSync(specFile);
     let json = JSON.parse(rawData);
     var keys = Object.keys(json.spec.inputs);
-
-    let spec = keys.map((x, i) => {
-      var input = {
+    const inputs = keys.map(x => {
+      return {
         name: x,
         type: Object.keys(json.spec.inputs[x])[0].replace(/^type:/g, '')
       };
+    });
+    return inputs;
+  }
+
+  createForm() {
+    let spec = this.state.inputs.map((input, i) => {
       let inputType;
       let multipleFile = false;
 
@@ -68,7 +94,9 @@ export default class ModuleSpecComponent extends React.Component {
     return (
       <React.Fragment>
         <form className="d-flex flex-column module-inputs">{spec}</form>
-        <button className="btn btn-primary mt-5 btn-run" onClick={this.onClick}>Run</button>
+        <button className="btn btn-primary mt-5 btn-run" onClick={this.onClick}>
+          Run
+        </button>
       </React.Fragment>
     );
   }

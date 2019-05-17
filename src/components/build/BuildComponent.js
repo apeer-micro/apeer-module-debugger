@@ -24,7 +24,7 @@ export default class BuildComponent extends React.Component {
 
     child.stdout.on('data', data => {
       let buildState = Object.assign({}, this.state.build);
-      buildState.log += `${data}\n`;
+      buildState.log += `${data}`;
       this.setState({ build: buildState });
       this.props.onBuildChange(this.state.build);
     });
@@ -45,7 +45,7 @@ export default class BuildComponent extends React.Component {
         console.log('build failed');
       } else {
         buildState.isSuccess = true;
-        console.log('success');
+        console.log('build success');
       }
 
       buildState.inProgress = false;
