@@ -8,6 +8,12 @@ export default class RunComponent extends React.Component {
       buildStatus: this.props.buildState,
       run: this.props.run
     };
+
+    this.onRunButtonClick = this.onRunButtonClick.bind(this);
+  }
+
+  onRunButtonClick(){
+    console.dir("inputs");
   }
 
   render() {
@@ -16,7 +22,7 @@ export default class RunComponent extends React.Component {
         {this.state.buildStatus ? (
           <div className="d-flex m-4">
             <div>
-              <ModuleSpecComponent module={this.props.module} />
+              <ModuleSpecComponent module={this.props.module} onRunButtonClick={this.onRunButtonClick}/>
             </div>
             <div className="pl-3">
                 {this.state.run.inProgress === false || this.state.run.isSuccess !== null ? (

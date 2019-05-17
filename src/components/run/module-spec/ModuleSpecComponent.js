@@ -6,6 +6,15 @@ import './ModuleSpecComponent.css';
 
 //Module spec
 export default class ModuleSpecComponent extends React.Component {
+  constructor(props){
+    super(props);
+    this.onClick = this.onClick.bind(this);
+  }
+
+  onClick() {
+    this.props.onRunButtonClick();
+  }
+
   createForm() {
     var specFile = path.join(this.props.module.path, 'module_specification.json');
     let rawData = fs.readFileSync(specFile);
@@ -59,7 +68,7 @@ export default class ModuleSpecComponent extends React.Component {
     return (
       <React.Fragment>
         <form className="d-flex flex-column module-inputs">{spec}</form>
-        <button className="btn btn-primary mt-5 btn-run">Run</button>
+        <button className="btn btn-primary mt-5 btn-run" onClick={this.onClick}>Run</button>
       </React.Fragment>
     );
   }
