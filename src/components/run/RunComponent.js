@@ -2,27 +2,30 @@ import React from 'react';
 const fs = window.require('fs-extra');
 const path = window.require('path');
 const { exec } = window.require('child_process');
+const { shell } = window.require('electron');
 
 import './RunComponent.css';
+import linkIcon from '../../assets/icons/link.svg';
 import ModuleSpecComponent from './module-spec/ModuleSpecComponent';
 
 export default class RunComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      run: this.props.run
+      run: this.props.run,
+      outputFolder: path.join(this.props.module.path, 'output'),
+      inputFolder: path.join(this.props.module.path, 'input'),
     };
 
     this.onRunButtonClick = this.onRunButtonClick.bind(this);
+    this.openOutputFolder = this.openOutputFolder.bind(this);
   }
 
   onRunButtonClick(inputs) {
     console.dir(inputs);
-    const inputFolder = path.join(this.props.module.path, 'input');
-    const outputFolder = path.join(this.props.module.path, 'output');
-    !fs.existsSync(inputFolder) && fs.mkdirSync(inputFolder);
-    !fs.existsSync(outputFolder) && fs.mkdirSync(outputFolder);
-    fs.emptyDir(outputFolder);
+    !fs.existsSync(this.state.inputFolder) && fs.mkdirSync(this.state.inputFolder);
+    !fs.existsSync(this.state.outputFolder) && fs.mkdirSync(this.state.outputFolder);
+    fs.emptyDir(this.state.outputFolder);
 
     let envVariable = '{"WFE_output_params_file":"wfe_module_params_1_1.json"';
     inputs.forEach(input => {
@@ -32,7 +35,7 @@ export default class RunComponent extends React.Component {
           var fullpath = input.value[0].path;
           var filename = path.basename(fullpath);
           envVariable += ',"' + input.name + '":' + '"/input/' + filename + '"';
-          fs.copyFileSync(fullpath, path.join(inputFolder, filename).toString());
+          fs.copyFileSync(fullpath, path.join(this.state.inputFolder, filename).toString());
           break;
         case 'list[file]':
           envVariable += ',"' + input.name + '":[';
@@ -40,7 +43,7 @@ export default class RunComponent extends React.Component {
             var fullpath = f.path;
             var filename = path.basename(fullpath);
             envVariable += '"/input/' + filename + '",';
-            fs.copyFileSync(fullpath, path.join(inputFolder, filename).toString());
+            fs.copyFileSync(fullpath, path.join(this.state.inputFolder, filename).toString());
           });
           envVariable = envVariable.replace(/,$/g, '');
           envVariable += ']';
@@ -54,9 +57,9 @@ export default class RunComponent extends React.Component {
     envVariable += '}';
     let dockerRunCommand =
       'docker run -v ' +
-      outputFolder +
+      this.state.outputFolder +
       ':/output -v ' +
-      inputFolder +
+      this.state.inputFolder +
       ":/input:ro -e WFE_INPUT_JSON='" +
       envVariable +
       "' " +
@@ -64,7 +67,7 @@ export default class RunComponent extends React.Component {
 
     // if windows
     if (/^win/i.test(process.platform)) {
-      dockerRunCommand = dockerRunCommand.replace(/\\([\s\S])|(")/g,"\\$1$2");
+      dockerRunCommand = dockerRunCommand.replace(/\\([\s\S])|(")/g, '\\$1$2');
       dockerRunCommand = dockerRunCommand.replace(/'/g, '"'); // for windows replace single quote to double quotes
     }
 
@@ -96,12 +99,12 @@ export default class RunComponent extends React.Component {
       console.log('exit', data);
       let runState = Object.assign({}, this.state.run);
       if (data == null || data !== 0) {
-        runState.isSuccess = false; 
-        runState.log += "module run failed";
+        runState.isSuccess = false;
+        runState.log += 'module run failed';
         console.log('run failed');
       } else {
         runState.isSuccess = true;
-        runState.log += "module ran successfully";
+        runState.log += 'module ran successfully';
         console.log('run success');
       }
 
@@ -111,19 +114,28 @@ export default class RunComponent extends React.Component {
     });
   }
 
+  openOutputFolder() {
+    console.dir(this.state.outputFolder);
+    shell.openItem(this.state.outputFolder);
+  }
+
   render() {
     return (
       <React.Fragment>
-        {(this.props.buildState) ? (
+        {this.props.buildState ? (
           <div className="d-flex m-4">
-            <div className="run-inputs col-4">
+            <div className="run-inputs d-flex flex-column col-4">
               <ModuleSpecComponent
                 module={this.props.module}
                 onRunButtonClick={this.onRunButtonClick}
               />
+              <a className="mt-5" role="button" href="#" onClick={this.openOutputFolder}>
+                Open Output Folder
+                <img src={linkIcon} className="pl-2" />
+              </a>
             </div>
             <div className="pl-3">
-              {(this.state.run.log === '' || !this.state.run.log) ? (
+              {this.state.run.log === '' || !this.state.run.log ? (
                 <span className="text-white">
                   To see module run logs, select the module inputs and click on run
                 </span>
