@@ -11,7 +11,7 @@ cd apeer-module-debugger
 npm install
 
 ## Run the app
-npm start
+npm run dev
 
 
 ## How to Use
