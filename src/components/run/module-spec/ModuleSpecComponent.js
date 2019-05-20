@@ -30,10 +30,15 @@ export default class ModuleSpecComponent extends React.Component {
         name: input.name,
         type: input.type,
         value: value
-      }
+      };
     });
 
-    this.props.onRunButtonClick(inputs);
+    console.dir(inputs);
+    if (inputs.find(x => x.value === '')) {
+      console.dir('nono');
+    } else {
+      this.props.onRunButtonClick(inputs);
+    }
   }
 
   setupInputs() {
@@ -77,15 +82,28 @@ export default class ModuleSpecComponent extends React.Component {
         <div className="form-group" key={input.name}>
           <label className="text-white">{input.name}</label>
           {inputType === 'file' ? (
-            <input
-              type={inputType}
-              name={input.name}
-              id={input.name}
-              multiple={multipleFile}
-              className="form-control-file text-white"
-            />
+            <div className="input-group">
+              <input
+                type={inputType}
+                name={input.name}
+                id={input.name}
+                multiple={multipleFile}
+                className="form-control-file text-white"
+                required
+              />
+              <div className="invalid-feedback">Input required</div>
+            </div>
           ) : (
-            <input type={inputType} name={input.name} id={input.name} className="form-control" />
+            <div className="input-group">
+              <input
+                type={inputType}
+                name={input.name}
+                id={input.name}
+                className="form-control"
+                required
+              />
+              <div className="invalid-feedback">Input required</div>
+            </div>
           )}
         </div>
       );
@@ -93,10 +111,12 @@ export default class ModuleSpecComponent extends React.Component {
 
     return (
       <React.Fragment>
-        <form className="d-flex flex-column module-inputs">{spec}</form>
-        <button className="btn btn-primary mt-5 btn-run" onClick={this.onClick}>
-          Run
-        </button>
+        <form className="d-flex flex-column module-inputs">
+          {spec}
+          <button type="button" className="btn btn-primary mt-5 btn-run" onClick={this.onClick}>
+            Run
+          </button>
+        </form>
       </React.Fragment>
     );
   }
