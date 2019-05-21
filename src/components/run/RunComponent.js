@@ -5,6 +5,7 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 
 import React from 'react';
+const process = window.require('process');
 const fs = window.require('fs-extra');
 const path = window.require('path');
 const { exec } = window.require('child_process');
@@ -24,6 +25,7 @@ export default class RunComponent extends React.Component {
   }
 
   onRunButtonClick(inputs) {
+    this.setState({ run: { inProgress: true, log: '', isSuccess: null } });
     console.dir(inputs);
     !fs.existsSync(this.state.inputFolder) && fs.mkdirSync(this.state.inputFolder);
     !fs.existsSync(this.state.outputFolder) && fs.mkdirSync(this.state.outputFolder);
@@ -74,13 +76,12 @@ export default class RunComponent extends React.Component {
 
     // if windows
     if (/^win/i.test(process.platform)) {
+      console.dir("windows");
       dockerRunCommand = dockerRunCommand.replace(/\\([\s\S])|(")/g, '\\$1$2');
       dockerRunCommand = dockerRunCommand.replace(/'/g, '"'); // for windows replace single quote to double quotes
     }
 
     console.dir(dockerRunCommand);
-    this.setState({ run: { inProgress: true, log: '', isSuccess: null } });
-
     const child = exec(dockerRunCommand, {
       async: true,
       maxBuffer: 2000 * 1024

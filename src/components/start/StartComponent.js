@@ -31,7 +31,7 @@ export default class StartComponent extends React.Component {
     if (files.find(x => x === 'DockerFile' || x === 'module_specification.json')) {
       this.props.onModuleSelected(module)
     } else{
-      setTimeout(() => toastr.error(`This is not a valid module folder`), 300);
+      setTimeout(() => toastr.error(`This is not a valid module folders`), 300);
     }
   }
 
