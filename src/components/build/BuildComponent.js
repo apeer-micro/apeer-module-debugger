@@ -1,4 +1,7 @@
 import React from 'react';
+import toastr from 'toastr';
+import 'toastr/build/toastr.min.css';
+
 const { exec } = window.require('child_process');
 
 export default class BuildComponent extends React.Component {
@@ -43,9 +46,11 @@ export default class BuildComponent extends React.Component {
       if (data == null || data !== 0) {
         buildState.isSuccess = false;
         console.log('build failed');
+        setTimeout(() => toastr.error(`Module build failed`), 300);
       } else {
         buildState.isSuccess = true;
         console.log('build success');
+        setTimeout(() => toastr.success(`Module successfully built`), 300);
       }
 
       buildState.inProgress = false;

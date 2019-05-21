@@ -1,8 +1,10 @@
+import './ModuleSpecComponent.css';
 import React from 'react';
 import path from 'path';
-const fs = window.require('fs');
+import toastr from 'toastr';
+import 'toastr/build/toastr.min.css';
 
-import './ModuleSpecComponent.css';
+const fs = window.require('fs');
 
 //Module spec
 export default class ModuleSpecComponent extends React.Component {
@@ -35,7 +37,7 @@ export default class ModuleSpecComponent extends React.Component {
 
     console.dir(inputs);
     if (inputs.find(x => x.value === '')) {
-      console.dir('nono');
+      setTimeout(() => toastr.error(`Select all the inputs to run the module`), 300);
     } else {
       this.props.onRunButtonClick(inputs);
     }

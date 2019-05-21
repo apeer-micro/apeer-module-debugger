@@ -1,10 +1,12 @@
 import React from 'react';
+import './StartComponent.css';
+import logo from '../../assets/logo.svg';
+import toastr from 'toastr';
+import 'toastr/build/toastr.min.css';
+
 const { ipcRenderer } = window.require('electron');
 const fs = window.require('fs');
 const path = window.require('path');
-
-import './StartComponent.css';
-import logo from '../../assets/logo.svg';
 
 export default class StartComponent extends React.Component {
   constructor(props){
@@ -28,6 +30,8 @@ export default class StartComponent extends React.Component {
 
     if (files.find(x => x === 'DockerFile' || x === 'module_specification.json')) {
       this.props.onModuleSelected(module)
+    } else{
+      setTimeout(() => toastr.error(`This is not a valid module folder`), 300);
     }
   }
 

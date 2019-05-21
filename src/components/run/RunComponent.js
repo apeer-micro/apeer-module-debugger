@@ -1,12 +1,14 @@
+import './RunComponent.css';
+import linkIcon from '../../assets/icons/link.svg';
+import ModuleSpecComponent from './module-spec/ModuleSpecComponent';
+import toastr from 'toastr';
+import 'toastr/build/toastr.min.css';
+
 import React from 'react';
 const fs = window.require('fs-extra');
 const path = window.require('path');
 const { exec } = window.require('child_process');
 const { shell } = window.require('electron');
-
-import './RunComponent.css';
-import linkIcon from '../../assets/icons/link.svg';
-import ModuleSpecComponent from './module-spec/ModuleSpecComponent';
 
 export default class RunComponent extends React.Component {
   constructor(props) {
@@ -102,10 +104,12 @@ export default class RunComponent extends React.Component {
         runState.isSuccess = false;
         runState.log += 'module run failed';
         console.log('run failed');
+        setTimeout(() => toastr.error(`Module run failed`), 300);
       } else {
         runState.isSuccess = true;
         runState.log += 'module ran successfully';
         console.log('run success');
+        setTimeout(() => toastr.success(`Module ran successfully`), 300);
       }
 
       runState.inProgress = false;

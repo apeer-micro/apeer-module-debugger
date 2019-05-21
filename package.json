@@ -11,7 +11,8 @@
     "fs-extra": "^8.0.1",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
-    "react-stepper-horizontal": "^1.0.11"
+    "react-stepper-horizontal": "^1.0.11",
+    "toastr": "^2.1.4"
   },
   "homepage": "./",
   "main": "src/electron-starter.js",
