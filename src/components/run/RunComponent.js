@@ -16,7 +16,7 @@ export default class RunComponent extends React.Component {
     this.state = {
       run: this.props.run,
       outputFolder: path.join(this.props.module.path, 'output'),
-      inputFolder: path.join(this.props.module.path, 'input'),
+      inputFolder: path.join(this.props.module.path, 'input')
     };
 
     this.onRunButtonClick = this.onRunButtonClick.bind(this);
@@ -37,7 +37,10 @@ export default class RunComponent extends React.Component {
           var fullpath = input.value[0].path;
           var filename = path.basename(fullpath);
           envVariable += ',"' + input.name + '":' + '"/input/' + filename + '"';
-          fs.copyFileSync(fullpath, path.join(this.state.inputFolder, filename).toString());
+          var dest = path.join(this.state.inputFolder, filename).toString();
+          if (fs.existsSync(dest)) {
+            fs.copyFileSync(fullpath, path.join(this.state.inputFolder, filename).toString());
+          }
           break;
         case 'list[file]':
           envVariable += ',"' + input.name + '":[';
@@ -45,7 +48,9 @@ export default class RunComponent extends React.Component {
             var fullpath = f.path;
             var filename = path.basename(fullpath);
             envVariable += '"/input/' + filename + '",';
-            fs.copyFileSync(fullpath, path.join(this.state.inputFolder, filename).toString());
+            if (fs.existsSync(dest)) {
+              fs.copyFileSync(fullpath, path.join(this.state.inputFolder, filename).toString());
+            }
           });
           envVariable = envVariable.replace(/,$/g, '');
           envVariable += ']';
