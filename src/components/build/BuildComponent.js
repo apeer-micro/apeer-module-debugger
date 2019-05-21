@@ -73,7 +73,7 @@ export default class BuildComponent extends React.Component {
           <div className="col">
             {this.state.build.log === '' || !this.state.build.log ? (
               <span className="text-white">
-                To see module run logs, select the module inputs and click on run
+                To build module and see the build logs, click on Build
               </span>
             ) : (
               <pre className="text-white w-100">{this.state.build.log}</pre>
