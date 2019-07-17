@@ -1,6 +1,7 @@
+import 'toastr/build/toastr.min.css';
+
 import React from 'react';
 import toastr from 'toastr';
-import 'toastr/build/toastr.min.css';
 
 const { exec } = window.require('child_process');
 

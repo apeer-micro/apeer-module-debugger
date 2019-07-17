@@ -1,10 +1,11 @@
-import React from 'react';
-import Stepper from 'react-stepper-horizontal'; // https://github.com/mu29/react-stepper
-
 import './HomeComponent.css';
-import logo from '../../assets/logo.svg';
-import rightIcon from '../../assets/icons/right.svg';
+
+import React from 'react';
+import Stepper from 'react-stepper-horizontal';
+
 import leftIcon from '../../assets/icons/left.svg';
+import rightIcon from '../../assets/icons/right.svg';
+import logo from '../../assets/logo.svg';
 import BuildComponent from '../build/BuildComponent';
 import RunComponent from '../run/RunComponent';
 

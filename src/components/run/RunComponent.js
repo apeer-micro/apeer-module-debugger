@@ -1,10 +1,12 @@
 import './RunComponent.css';
-import linkIcon from '../../assets/icons/link.svg';
-import ModuleSpecComponent from './module-spec/ModuleSpecComponent';
-import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 
 import React from 'react';
+import toastr from 'toastr';
+
+import linkIcon from '../../assets/icons/link.svg';
+import ModuleSpecComponent from './module-spec/ModuleSpecComponent';
+
 const process = window.require('process');
 const fs = window.require('fs-extra');
 const path = window.require('path');
@@ -38,7 +40,7 @@ export default class RunComponent extends React.Component {
           console.dir(input.value);
           var fullpath = input.value[0].path;
           var filename = path.basename(fullpath);
-          envVariable += ',"' + input.name + '":' + '"/input/' + filename + '"';
+          envVariable += ',"' + input.name + '":"/input/' + filename + '"';
           var dest = path.join(this.state.inputFolder, filename).toString();
           if (fs.existsSync(dest)) {
             fs.copyFileSync(fullpath, path.join(this.state.inputFolder, filename).toString());
@@ -141,7 +143,7 @@ export default class RunComponent extends React.Component {
               />
               <a className="mt-5" role="button" href="#" onClick={this.openOutputFolder}>
                 Open Output Folder
-                <img src={linkIcon} className="pl-2" />
+                <img src={linkIcon} className="pl-2" alt="test"/>
               </a>
             </div>
             <div className="pl-3">

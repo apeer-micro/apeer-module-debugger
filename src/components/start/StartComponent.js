@@ -1,8 +1,10 @@
-import React from 'react';
 import './StartComponent.css';
-import logo from '../../assets/logo.svg';
-import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
+
+import React from 'react';
+import toastr from 'toastr';
+
+import logo from '../../assets/logo.svg';
 
 const { ipcRenderer } = window.require('electron');
 const fs = window.require('fs');

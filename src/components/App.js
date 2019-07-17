@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
 import './App.css';
 
-import StartComponent from './start/StartComponent';
+import React, { Component } from 'react';
+
 import HomeComponent from './home/HomeComponent';
+import StartComponent from './start/StartComponent';
 
 class App extends Component {
   constructor(props){

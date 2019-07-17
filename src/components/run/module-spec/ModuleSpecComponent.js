@@ -1,8 +1,9 @@
 import './ModuleSpecComponent.css';
-import React from 'react';
-import path from 'path';
-import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
+
+import path from 'path';
+import React from 'react';
+import toastr from 'toastr';
 
 const fs = window.require('fs');
 
