@@ -20,6 +20,9 @@ function createWindow() {
         width: 1280,
         height: 800,
         minWidth: 700,
+        webPreferences: {
+            nodeIntegration: true
+          }
     });
     mainWindow.setMenuBarVisibility(false)
 
