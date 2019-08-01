@@ -1,4 +1,6 @@
-[![Build Status](https://dev.azure.com/apeer-micro/apeer-open-source/_apis/build/status/apeer-micro.apeer-module-debugger?branchName=master)](https://dev.azure.com/apeer-micro/apeer-open-source/_build/latest?definitionId=1&branchName=master)
+master [![Build Status](https://dev.azure.com/apeer-micro/apeer-open-source/_apis/build/status/apeer-micro.apeer-module-debugger?branchName=master)](https://dev.azure.com/apeer-micro/apeer-open-source/_build/latest?definitionId=1&branchName=master)
+
+develop [![Build Status](https://dev.azure.com/apeer-micro/apeer-open-source/_apis/build/status/apeer-micro.apeer-module-debugger?branchName=develop)](https://dev.azure.com/apeer-micro/apeer-open-source/_build/latest?definitionId=1&branchName=develop)
 
 ---
 
