@@ -1,3 +1,7 @@
+[![Build Status](https://dev.azure.com/apeer-micro/apeer-open-source/_apis/build/status/apeer-micro.apeer-module-debugger?branchName=master)](https://dev.azure.com/apeer-micro/apeer-open-source/_build/latest?definitionId=1&branchName=master)
+
+---
+
 Before starting, please install "npm" and "docker"
 (Install npm using: https://www.npmjs.com/get-npm)
 
