@@ -1,7 +1,7 @@
 {
   "name": "apeer-module-debugger",
   "author": "Apeer",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": true,
   "devDependencies": {
     "cross-env": "5.2.0",
@@ -30,7 +30,8 @@
     "react-test": "react-scripts test --env=jsdom",
     "react-eject": "react-scripts eject",
     "electron-build": "electron-builder",
-    "release": "yarn react-build && electron-builder --publish=always",
+    "release": "yarn react-build && electron-builder  --win --mac --publish=always",
+    "build-all": "yarn react-build && yarn electron-build --win --mac",
     "build": "yarn react-build && yarn electron-build",
     "start": "concurrently \"cross-env BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && electron .\"",
     "preelectron-pack": "yarn build",
