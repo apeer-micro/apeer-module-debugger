@@ -16,5 +16,11 @@ steps:
 - script: |
     export GH_TOKEN=$(GH_TOKEN)
     yarn install
-    yarn release
-  displayName: 'yarn install and build'
+  displayName: 'yarn install'
+
+- script: yarn build-all
+  condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
+  displayName: 'yarn build'
+- script: yarn release
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  displayName: 'yarn release from master'
