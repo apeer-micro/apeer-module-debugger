@@ -5,7 +5,7 @@ trigger:
 - develop
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'macOS-10.14'
 
 steps:
 - task: NodeTool@0
@@ -14,6 +14,7 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
+    export GH_TOKEN=$(GH_TOKEN)
     yarn install
     yarn build
   displayName: 'yarn install and build'
