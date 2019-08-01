@@ -23,7 +23,10 @@ export default class BuildComponent extends React.Component {
     const child = exec(dockerBuildCommand, {
       async: true,
       cwd: this.props.module.path,
-      maxBuffer: 2000 * 1024
+      maxBuffer: 2000 * 1024,
+      env: {
+        shell: true
+      }
     });
 
     child.stdout.on('data', data => {

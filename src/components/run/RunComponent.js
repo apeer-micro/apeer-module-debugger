@@ -86,7 +86,10 @@ export default class RunComponent extends React.Component {
     console.dir(dockerRunCommand);
     const child = exec(dockerRunCommand, {
       async: true,
-      maxBuffer: 2000 * 1024
+      maxBuffer: 2000 * 1024,
+      env: {
+        shell: true
+      }
     });
 
     child.stdout.on('data', data => {
