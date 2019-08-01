@@ -1,26 +1,26 @@
 {
-  "name": "Apeer-Module-Debugger",
+  "name": "apeer-module-debugger",
   "author": "Apeer",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "electron": "2.0.2",
-    "cross-env": "5.1.6",
-    "electron-log": "^2.2.6",
+    "cross-env": "5.2.0",
+    "electron": "6.0.0",
+    "electron-builder": "^21.2.0",
+    "electron-log": "^3.0.7",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "update-electron-app": "^1.2.0",
-    "electron-builder": "^20.26.0"
+    "update-electron-app": "^1.2.0"
   },
   "dependencies": {
+    "concurrently": "4.1.1",
+    "electron-is-dev": "1.1.0",
     "fs-extra": "^8.0.1",
+    "prettier": "^1.4.4",
+    "react-scripts": "3.0.1",
     "react-stepper-horizontal": "^1.0.11",
     "toastr": "^2.1.4",
-    "concurrently": "3.5.1",
-    "prettier": "^1.4.4",
-    "react-scripts": "1.1.4",
-    "wait-on": "2.1.0",
-    "electron-is-dev": "0.3.0"
+    "wait-on": "3.3.0"
   },
   "homepage": "./",
   "main": "public/electron.js",
@@ -45,5 +45,17 @@
     "directories": {
       "buildResources": "assets"
     }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
