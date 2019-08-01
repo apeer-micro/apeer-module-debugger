@@ -16,5 +16,5 @@ steps:
 - script: |
     export GH_TOKEN=$(GH_TOKEN)
     yarn install
-    yarn build
+    yarn release
   displayName: 'yarn install and build'
