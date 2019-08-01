@@ -14,6 +14,7 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
+    export GH_TOKEN=$(GH_TOKEN)
     yarn install
     yarn build
   displayName: 'yarn install and build'
