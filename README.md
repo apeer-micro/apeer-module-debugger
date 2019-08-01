@@ -5,7 +5,7 @@ develop [![Build Status](https://dev.azure.com/apeer-micro/apeer-open-source/_ap
 ---
 
 Before starting, please install "npm" and "docker"
-(Install npm using: https://www.npmjs.com/get-npm)
+(Install yarn using: https://yarnpkg.com/lang/en/docs/install)
 
 ## Clone the repository
 git clone https://github.com/apeer-micro/apeer-module-debugger.git
@@ -14,10 +14,13 @@ git clone https://github.com/apeer-micro/apeer-module-debugger.git
 cd apeer-module-debugger
 
 ## Install dependencies
-npm install
+yarn install
 
 ## Run the app
-npm run start
+yarn start
+
+## To create app
+yarn build
 
 
 ## How to Use
