@@ -1,4 +1,5 @@
 master [![Build Status](https://dev.azure.com/apeer-micro/apeer-open-source/_apis/build/status/apeer-micro.apeer-module-debugger?branchName=master)](https://dev.azure.com/apeer-micro/apeer-open-source/_build/latest?definitionId=1&branchName=master)
+![Platform Supported](https://img.shields.io/badge/platform-windows%20%7C%20mac-lightgrey)
 
 ---
 
