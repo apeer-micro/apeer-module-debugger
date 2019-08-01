@@ -1,33 +1,40 @@
 {
   "name": "Apeer-Module-Debugger",
+  "author": "Apeer",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "electron": "^4.0.4",
-    "foreman": "^3.0.1",
-    "react-scripts": "^3.0.1"
+    "electron": "2.0.2",
+    "cross-env": "5.1.6",
+    "electron-log": "^2.2.6",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "update-electron-app": "^1.2.0",
+    "electron-builder": "^20.26.0"
   },
   "dependencies": {
-    "electron-builder": "^21.2.0",
     "fs-extra": "^8.0.1",
-    "react": "^16.1.1",
-    "react-dom": "^16.1.1",
     "react-stepper-horizontal": "^1.0.11",
-    "toastr": "^2.1.4"
+    "toastr": "^2.1.4",
+    "concurrently": "3.5.1",
+    "prettier": "^1.4.4",
+    "react-scripts": "1.1.4",
+    "wait-on": "2.1.0",
+    "electron-is-dev": "0.3.0"
   },
   "homepage": "./",
-  "main": "src/electron-starter.js",
+  "main": "public/electron.js",
   "scripts": {
-    "start": "nf start -p 3000",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "electron": "electron .",
-    "electron-start": "node src/electron-wait-react",
     "react-start": "react-scripts start",
-    "pack": "build --dir",
-    "dist": "npm run build && build",
-    "postinstall": "install-app-deps"
+    "react-build": "react-scripts build",
+    "react-test": "react-scripts test --env=jsdom",
+    "react-eject": "react-scripts eject",
+    "electron-build": "electron-builder",
+    "release": "yarn react-build && electron-builder --publish=always",
+    "build": "yarn react-build && yarn electron-build",
+    "start": "concurrently \"cross-env BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && electron .\"",
+    "preelectron-pack": "yarn build",
+    "electron-pack": "build  -c.extraMetadata.main = build/electron.js"
   },
   "build": {
     "appId": "com.apeer",
@@ -36,19 +43,7 @@
       "node_modules/**/*"
     ],
     "directories": {
-      "buildResources": "src/assets"
+      "buildResources": "assets"
     }
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   }
 }
