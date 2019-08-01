@@ -21,6 +21,7 @@ steps:
 - script: yarn build-all
   condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
   displayName: 'yarn build'
+
 - script: yarn release
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   displayName: 'yarn release from master'
