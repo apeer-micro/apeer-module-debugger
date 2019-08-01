@@ -4,7 +4,7 @@ develop [![Build Status](https://dev.azure.com/apeer-micro/apeer-open-source/_ap
 
 ---
 
-Before starting, please install "npm" and "docker"
+Before starting, please install "yarn" and "docker"
 (Install yarn using: https://yarnpkg.com/lang/en/docs/install)
 
 ## Clone the repository
