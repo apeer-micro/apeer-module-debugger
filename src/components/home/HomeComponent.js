@@ -21,7 +21,7 @@ export default class HomeComponent extends React.Component {
       },
       run:{
         inProgress: false,
-        Log: '',
+        log: '',
         isSuccess: null
       }
     };
@@ -32,7 +32,7 @@ export default class HomeComponent extends React.Component {
   }
 
   onBuildChange(currentBuildState){
-    this.setState({run: {inProgress: false, Log: '', isSuccess:null}});
+    this.setState({run: {inProgress: false, log: '', isSuccess:null}});
     this.setState({build: currentBuildState});
   }
 

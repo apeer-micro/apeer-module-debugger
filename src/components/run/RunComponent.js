@@ -6,6 +6,7 @@ import toastr from 'toastr';
 
 import linkIcon from '../../assets/icons/link.svg';
 import ModuleSpecComponent from './module-spec/ModuleSpecComponent';
+import { string } from 'postcss-selector-parser';
 
 const process = window.require('process');
 const fs = window.require('fs-extra');
@@ -28,7 +29,8 @@ export default class RunComponent extends React.Component {
 
   onRunButtonClick(inputs) {
     this.setState({ run: { inProgress: true, log: '', isSuccess: null } });
-    console.dir(inputs);
+    this.props.onRunChange(this.state.run);
+    console.dir(this.state.run);
     !fs.existsSync(this.state.inputFolder) && fs.mkdirSync(this.state.inputFolder);
     !fs.existsSync(this.state.outputFolder) && fs.mkdirSync(this.state.outputFolder);
     fs.emptyDir(this.state.outputFolder);
@@ -83,6 +85,11 @@ export default class RunComponent extends React.Component {
       dockerRunCommand = dockerRunCommand.replace(/'/g, '"'); // for windows replace single quote to double quotes
     }
 
+    let runState = Object.assign({}, this.state.run);
+    runState.log = `Running module with command: ${dockerRunCommand}\n\n`;
+    this.setState({ run: runState });
+    this.props.onRunChange(this.state.run);
+
     console.dir(dockerRunCommand);
     const child = exec(dockerRunCommand, {
       async: true,
@@ -94,18 +101,12 @@ export default class RunComponent extends React.Component {
 
     child.stdout.on('data', data => {
       console.log(data);
-      let runState = Object.assign({}, this.state.run);
-      runState.log += `${data}\n`;
-      this.setState({ run: runState });
-      this.props.onRunChange(this.state.run);
+      this.UpdateLog(data);
     });
 
     child.stderr.on('data', data => {
       console.log('error', data);
-      let runState = Object.assign({}, this.state.run);
-      runState.log += `${data}\n`;
-      this.setState({ run: runState });
-      this.props.onRunChange(this.state.run);
+      this.UpdateLog(data);
     });
 
     child.on('exit', data => {
@@ -127,6 +128,13 @@ export default class RunComponent extends React.Component {
       this.setState({ run: runState });
       this.props.onRunChange(this.state.run);
     });
+  }
+
+  UpdateLog(log) {
+    let runState = Object.assign({}, this.state.run);
+    runState.log += `${log}\n`;
+    this.setState({ run: runState });
+    this.props.onRunChange(this.state.run);
   }
 
   openOutputFolder() {
