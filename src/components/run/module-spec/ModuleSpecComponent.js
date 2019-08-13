@@ -116,7 +116,7 @@ export default class ModuleSpecComponent extends React.Component {
       <React.Fragment>
         <form className="d-flex flex-column module-inputs">
           {spec}
-          <button type="button" className="btn btn-primary mt-5 btn-run" onClick={this.onClick}>
+          <button type="button" className="btn btn-primary mt-5 btn-run" onClick={this.onClick} disabled={this.props.disableRunButton}>
             Run
           </button>
         </form>

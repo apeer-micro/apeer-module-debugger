@@ -17,7 +17,7 @@ export default class BuildComponent extends React.Component {
   onBuildButtonClick() {
     const dockerBuildCommand = `docker build -t ${this.props.module.name} .`;
     console.log('Docker Build Command', dockerBuildCommand);
-    this.setState({ build: { inProgress: true, isSuccess: null, log: `Building module with command: ${dockerBuildCommand}\n\n`} });
+    this.setState({ build: { inProgress: true, isSuccess: null, log: `Building module ...\n`} });
     this.props.onBuildChange(this.state.build);
 
     const child = exec(dockerBuildCommand, {

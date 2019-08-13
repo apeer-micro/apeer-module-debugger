@@ -6,7 +6,6 @@ import toastr from 'toastr';
 
 import linkIcon from '../../assets/icons/link.svg';
 import ModuleSpecComponent from './module-spec/ModuleSpecComponent';
-import { string } from 'postcss-selector-parser';
 
 const process = window.require('process');
 const fs = window.require('fs-extra');
@@ -28,7 +27,7 @@ export default class RunComponent extends React.Component {
   }
 
   onRunButtonClick(inputs) {
-    this.setState({ run: { inProgress: true, log: '', isSuccess: null } });
+    this.setState({ run: { inProgress: true, log: 'Running module ...\n', isSuccess: null } });
     this.props.onRunChange(this.state.run);
     console.dir(this.state.run);
     !fs.existsSync(this.state.inputFolder) && fs.mkdirSync(this.state.inputFolder);
@@ -61,8 +60,11 @@ export default class RunComponent extends React.Component {
           envVariable = envVariable.replace(/,$/g, '');
           envVariable += ']';
           break;
+        case 'string':
+          envVariable += `,"${input.name}":"${input.value}"`;
+          break;
         default:
-          envVariable += ',"' + input.name + '":' + input.value;
+          envVariable += `,"${input.name}":${input.value}`;
           break;
       }
     });
@@ -84,11 +86,6 @@ export default class RunComponent extends React.Component {
       dockerRunCommand = dockerRunCommand.replace(/\\([\s\S])|(")/g, '\\$1$2');
       dockerRunCommand = dockerRunCommand.replace(/'/g, '"'); // for windows replace single quote to double quotes
     }
-
-    let runState = Object.assign({}, this.state.run);
-    runState.log = `Running module with command: ${dockerRunCommand}\n\n`;
-    this.setState({ run: runState });
-    this.props.onRunChange(this.state.run);
 
     console.dir(dockerRunCommand);
     const child = exec(dockerRunCommand, {
@@ -150,6 +147,7 @@ export default class RunComponent extends React.Component {
             <div className="run-inputs d-flex flex-column col-4">
               <ModuleSpecComponent
                 module={this.props.module}
+                disableRunButton = {this.state.run.inProgress}
                 onRunButtonClick={this.onRunButtonClick}
               />
               <a className="mt-5" role="button" href="#" onClick={this.openOutputFolder}>
