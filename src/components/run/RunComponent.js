@@ -27,8 +27,9 @@ export default class RunComponent extends React.Component {
   }
 
   onRunButtonClick(inputs) {
-    this.setState({ run: { inProgress: true, log: '', isSuccess: null } });
-    console.dir(inputs);
+    this.setState({ run: { inProgress: true, log: 'Running module ...\n', isSuccess: null } });
+    this.props.onRunChange(this.state.run);
+    console.dir(this.state.run);
     !fs.existsSync(this.state.inputFolder) && fs.mkdirSync(this.state.inputFolder);
     !fs.existsSync(this.state.outputFolder) && fs.mkdirSync(this.state.outputFolder);
     fs.emptyDir(this.state.outputFolder);
@@ -42,7 +43,7 @@ export default class RunComponent extends React.Component {
           var filename = path.basename(fullpath);
           envVariable += ',"' + input.name + '":"/input/' + filename + '"';
           var dest = path.join(this.state.inputFolder, filename).toString();
-          if (fs.existsSync(dest)) {
+          if (!fs.existsSync(dest)) {
             fs.copyFileSync(fullpath, path.join(this.state.inputFolder, filename).toString());
           }
           break;
@@ -52,15 +53,18 @@ export default class RunComponent extends React.Component {
             var fullpath = f.path;
             var filename = path.basename(fullpath);
             envVariable += '"/input/' + filename + '",';
-            if (fs.existsSync(dest)) {
+            if (!fs.existsSync(dest)) {
               fs.copyFileSync(fullpath, path.join(this.state.inputFolder, filename).toString());
             }
           });
           envVariable = envVariable.replace(/,$/g, '');
           envVariable += ']';
           break;
+        case 'string':
+          envVariable += `,"${input.name}":"${input.value}"`;
+          break;
         default:
-          envVariable += ',"' + input.name + '":' + input.value;
+          envVariable += `,"${input.name}":${input.value}`;
           break;
       }
     });
@@ -94,18 +98,12 @@ export default class RunComponent extends React.Component {
 
     child.stdout.on('data', data => {
       console.log(data);
-      let runState = Object.assign({}, this.state.run);
-      runState.log += `${data}\n`;
-      this.setState({ run: runState });
-      this.props.onRunChange(this.state.run);
+      this.UpdateLog(data);
     });
 
     child.stderr.on('data', data => {
       console.log('error', data);
-      let runState = Object.assign({}, this.state.run);
-      runState.log += `${data}\n`;
-      this.setState({ run: runState });
-      this.props.onRunChange(this.state.run);
+      this.UpdateLog(data);
     });
 
     child.on('exit', data => {
@@ -129,6 +127,13 @@ export default class RunComponent extends React.Component {
     });
   }
 
+  UpdateLog(log) {
+    let runState = Object.assign({}, this.state.run);
+    runState.log += `${log}\n`;
+    this.setState({ run: runState });
+    this.props.onRunChange(this.state.run);
+  }
+
   openOutputFolder() {
     console.dir(this.state.outputFolder);
     shell.openItem(this.state.outputFolder);
@@ -142,6 +147,7 @@ export default class RunComponent extends React.Component {
             <div className="run-inputs d-flex flex-column col-4">
               <ModuleSpecComponent
                 module={this.props.module}
+                disableRunButton = {this.state.run.inProgress}
                 onRunButtonClick={this.onRunButtonClick}
               />
               <a className="mt-5" role="button" href="#" onClick={this.openOutputFolder}>

@@ -9,7 +9,7 @@ export default class BuildComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      build: this.props.build
+      build: this.props.build,
     };
     this.onBuildButtonClick = this.onBuildButtonClick.bind(this);
   }
@@ -17,7 +17,7 @@ export default class BuildComponent extends React.Component {
   onBuildButtonClick() {
     const dockerBuildCommand = `docker build -t ${this.props.module.name} .`;
     console.log('Docker Build Command', dockerBuildCommand);
-    this.setState({ build: { inProgress: true, log: '', isSuccess: null } });
+    this.setState({ build: { inProgress: true, isSuccess: null, log: `Building module ...\n`} });
     this.props.onBuildChange(this.state.build);
 
     const child = exec(dockerBuildCommand, {
