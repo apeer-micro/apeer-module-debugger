@@ -4,6 +4,7 @@
 ---
 
 ## How to Use
+- You can read a comprehensive tutorial at <https://docs.apeer.com/create-modules/module-debugging>
 - Make sure docker is installed (for windows, make sure that you have shared your drive with docker)
 - Select your module folder
 - Click on "Build module"
