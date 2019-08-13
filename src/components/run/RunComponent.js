@@ -43,7 +43,7 @@ export default class RunComponent extends React.Component {
           var filename = path.basename(fullpath);
           envVariable += ',"' + input.name + '":"/input/' + filename + '"';
           var dest = path.join(this.state.inputFolder, filename).toString();
-          if (fs.existsSync(dest)) {
+          if (!fs.existsSync(dest)) {
             fs.copyFileSync(fullpath, path.join(this.state.inputFolder, filename).toString());
           }
           break;
@@ -53,7 +53,7 @@ export default class RunComponent extends React.Component {
             var fullpath = f.path;
             var filename = path.basename(fullpath);
             envVariable += '"/input/' + filename + '",';
-            if (fs.existsSync(dest)) {
+            if (!fs.existsSync(dest)) {
               fs.copyFileSync(fullpath, path.join(this.state.inputFolder, filename).toString());
             }
           });
