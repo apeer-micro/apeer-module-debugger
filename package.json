@@ -2,7 +2,7 @@
   "name": "apeer-module-debugger",
   "productName": "APEER Module Debugger",
   "author": "Apeer",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "private": true,
   "devDependencies": {
     "cross-env": "5.2.0",
@@ -18,7 +18,7 @@
     "electron-is-dev": "1.1.0",
     "fs-extra": "^8.0.1",
     "prettier": "^1.4.4",
-    "react-scripts": "3.0.1",
+    "react-scripts": "^3.1.1",
     "react-stepper-horizontal": "^1.0.11",
     "toastr": "^2.1.4",
     "wait-on": "3.3.0"
@@ -46,7 +46,7 @@
     ],
     "directories": {
       "buildResources": "build"
-   }
+    }
   },
   "browserslist": {
     "production": [
