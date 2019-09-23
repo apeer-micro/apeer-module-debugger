@@ -3,14 +3,24 @@ import 'toastr/build/toastr.min.css';
 
 import React from 'react';
 import toastr from 'toastr';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
 import logo from '../../assets/logo.svg';
+const styles = theme => ({
+  main: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  }
+});
 
 const { ipcRenderer } = window.require('electron');
 const fs = window.require('fs');
 const path = window.require('path');
 
-export default class StartComponent extends React.Component {
+class StartComponent extends React.Component {
   constructor(props){
     super(props);
     this.folderSelected = this.folderSelected.bind(this);
@@ -38,8 +48,10 @@ export default class StartComponent extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     return (
-      <div className="d-flex justify-content-center text-center flex-column section-start">
+      <div className={classes.main}>
         <div>
           <img className="logo" src={logo} alt="logo" />
           <h1 className="text-white header-title">Module Debugger</h1>
@@ -48,11 +60,18 @@ export default class StartComponent extends React.Component {
           <h3 className="text-white pb-3">
            Open your module folder to start building!
           </h3>
-          <button className="btn btn-light mx-auto" onClick={() => this.openFolder()}>
+
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={() => this.openFolder()}>
             Open Module Folder
-          </button>
+          </Button>
         </div>
       </div>
     );
   }
 }
+
+export default withStyles(styles)(StartComponent);

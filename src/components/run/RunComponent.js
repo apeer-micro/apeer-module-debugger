@@ -1,11 +1,12 @@
-import './RunComponent.css';
 import 'toastr/build/toastr.min.css';
-
 import React from 'react';
 import toastr from 'toastr';
-
+import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
 import linkIcon from '../../assets/icons/link.svg';
 import ModuleSpecComponent from './module-spec/ModuleSpecComponent';
+import { Typography } from '@material-ui/core';
+import Link from '@material-ui/core/Link';
 
 const process = window.require('process');
 const fs = window.require('fs-extra');
@@ -13,7 +14,18 @@ const path = window.require('path');
 const { exec } = window.require('child_process');
 const { shell } = window.require('electron');
 
-export default class RunComponent extends React.Component {
+const styles = theme => ({
+  button: {
+    margin: theme.spacing(1),
+  },
+
+  main: {
+    padding: theme.spacing(3, 2),
+    margin: theme.spacing(1),
+  }
+});
+
+class RunComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -140,38 +152,42 @@ export default class RunComponent extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     return (
-      <React.Fragment>
+      <Paper className={classes.main}>
         {this.props.buildState ? (
-          <div className="d-flex m-4">
-            <div className="run-inputs d-flex flex-column col-4">
-              <ModuleSpecComponent
-                module={this.props.module}
-                disableRunButton = {this.state.run.inProgress}
-                onRunButtonClick={this.onRunButtonClick}
-              />
-              <a className="mt-5" role="button" href="#" onClick={this.openOutputFolder}>
-                Open Output Folder
-                <img src={linkIcon} className="pl-2" alt="test"/>
-              </a>
-            </div>
-            <div className="pl-3">
-              {this.state.run.log === '' || !this.state.run.log ? (
-                <span className="text-white">
-                  To see module run logs, select the module inputs and click on run
-                </span>
-              ) : (
-                ''
-              )}
-              <pre className="text-white w-100 run-log">{this.state.run.log}</pre>
-            </div>
+          <div>
+            <ModuleSpecComponent
+              module={this.props.module}
+              disableRunButton = {this.state.run.inProgress}
+              onRunButtonClick={this.onRunButtonClick}
+            />
+            <Link variant="body1" href="#" onClick={this.openOutputFolder}>
+              Open Output Folder
+              &nbsp;
+              <img src={linkIcon} className="pl-2" alt="test"/>
+            </Link>
+
+            {this.state.run.log === '' || !this.state.run.log ? (
+              <Typography variant='body1'>
+                To see module run logs, select the module inputs and click on run
+              </Typography>
+            ) : (
+              ''
+            )}
+            <Typography variant='body1'>
+              <pre>{this.state.run.log}</pre>
+            </Typography>
           </div>
         ) : (
           <span className="text-white m-2 row">
             Build the module successfully to start running it.
           </span>
         )}
-      </React.Fragment>
+      </Paper>
     );
   }
 }
+
+export default withStyles(styles)(RunComponent);

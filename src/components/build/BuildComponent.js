@@ -1,11 +1,32 @@
 import 'toastr/build/toastr.min.css';
-
 import React from 'react';
 import toastr from 'toastr';
+import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import { Typography } from '@material-ui/core';
+import Fab from '@material-ui/core/Fab';
 
 const { exec } = window.require('child_process');
 
-export default class BuildComponent extends React.Component {
+const styles = theme => ({
+  button: {
+    margin: theme.spacing(1),
+  },
+
+  console: {
+    padding: theme.spacing(3, 2),
+    margin: theme.spacing(1),
+  },
+
+  fab: {
+    position: 'fixed',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  }
+});
+
+class BuildComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -64,27 +85,48 @@ export default class BuildComponent extends React.Component {
   }
 
   render() {
+    const classes = this.props.classes
+
     return (
       <React.Fragment>
-        <div className="m-2 row">
-          <button
-            className="btn btn-primary col-2 action-button"
-            onClick={this.onBuildButtonClick}
-            disabled={this.state.build.inProgress}
-          >
-            Build
-          </button>
-          <div className="col">
-            {this.state.build.log === '' || !this.state.build.log ? (
-              <span className="text-white">
-                To build module and see the build logs, click on Build
-              </span>
-            ) : (
-              <pre className="text-white w-100">{this.state.build.log}</pre>
-            )}
-          </div>
-        </div>
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          onClick={this.onBuildButtonClick}
+          disabled={this.state.build.inProgress}>
+          Build
+        </Button>
+
+        <Fab
+          variant="extended"
+          color="primary"
+          onClick={this.onBuildButtonClick}
+          disabled={this.state.build.inProgress}
+          className={classes.fab}>
+          Build
+        </Fab>
+
+        <Paper className={classes.console}>
+          <Typography variant="h5" component="h3">
+            Build Output
+          </Typography>
+          {this.state.build.log === '' || !this.state.build.log ? (
+            <Typography component="p">
+              To build module and see the build logs, click on Build
+            </Typography>
+          ) : (
+            <Typography variant='body1'>
+              <pre>{this.state.build.log}</pre>
+              <pre>{this.state.build.log}</pre>
+              <pre>{this.state.build.log}</pre>
+              <pre>{this.state.build.log}</pre>
+            </Typography>
+          )}
+        </Paper>
       </React.Fragment>
     );
   }
 }
+
+export default withStyles(styles)(BuildComponent);

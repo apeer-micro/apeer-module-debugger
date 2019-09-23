@@ -1,15 +1,31 @@
-import './HomeComponent.css';
-
 import React from 'react';
-import Stepper from 'react-stepper-horizontal';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepButton from '@material-ui/core/StepButton';
 
-import leftIcon from '../../assets/icons/left.svg';
-import rightIcon from '../../assets/icons/right.svg';
 import logo from '../../assets/logo.svg';
 import BuildComponent from '../build/BuildComponent';
 import RunComponent from '../run/RunComponent';
+import Toolbar from '@material-ui/core/Toolbar';
+import AppBar from '@material-ui/core/AppBar';
 
-export default class HomeComponent extends React.Component {
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+  logo: {
+    paddingRight: theme.spacing(2),
+  },
+
+  spacer: {
+    flexGrow: 1
+  },
+
+  toolbar: {
+    height: '108px',
+  }
+});
+
+class HomeComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,6 +45,7 @@ export default class HomeComponent extends React.Component {
     this.onRunChange = this.onRunChange.bind(this);
     this.onClickNext = this.onClickNext.bind(this);
     this.onClickBack = this.onClickBack.bind(this);
+    this.onStepChange = this.onStepChange.bind(this);
   }
 
   onBuildChange(currentBuildState){
@@ -54,7 +71,14 @@ export default class HomeComponent extends React.Component {
     }
   }
 
+  onStepChange(event) {
+    console.log(event);
+  }
+
   render() {
+    const { classes } = this.props;
+    const { activeStep } = this.state;
+
     let spinner;
     if(this.state.build.inProgress){
       spinner = (<div className="spinner-grow text-primary ml-0 build-spinner" role="status" />);
@@ -76,34 +100,34 @@ export default class HomeComponent extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="header align-items-center d-flex">
-          <img src={logo} alt="logo" className="ml-3" />
-          <span className="text-white module-name ml-5">{this.props.module.name}</span>
-          <div className="stepper-container">
-            <Stepper
-              activeColor="#008bd0"
-              completeColor="white"
-              circleFontSize={0}
-              activeTitleColor="white"
-              completeTitleColor="white"
-              defaultTitleColor="white"
-              completeBarColor="white"
-              size={16}
-              steps={[{ title: 'Build' }, { title: 'Run' }]}
-              activeStep={this.state.activeStep}
-            />
-            {spinner}
-            <button className="left-icon button-no-style" onClick={this.onClickBack} disabled={this.state.build.inProgress || this.state.run.inProgress}>
-              <img src={leftIcon} alt="lefticon" />
-            </button>
-            <button className="right-icon button-no-style" onClick={this.onClickNext} disabled={this.state.build.inProgress || this.state.run.inProgress}>
-              <img src={rightIcon} alt="righticon" />
-            </button>
-          </div>
-        </div>
-        <div className="bottom-line" />
+        <AppBar position="fixed">
+          <Toolbar className={classes.toolbar}>
+            <img src={logo} alt="logo" className={classes.logo} />
+            <div className={classes.spacer}>
+              {this.props.module.name}
+            </div>
+            <Stepper alternativeLabel nonLinear activeStep={activeStep}>
+              <Step>
+                <StepButton onClick={this.onClickBack}>
+                  Build
+                </StepButton>
+              </Step>
+
+              <Step>
+                <StepButton onClick={this.onClickNext}>
+                  Run
+                </StepButton>
+              </Step>
+            </Stepper>
+          </Toolbar>
+        </AppBar>
+        <div className={classes.toolbar} />
+
+        {spinner}
         {currentTab}
       </React.Fragment>
     );
   }
 }
+
+export default withStyles(styles)(HomeComponent);

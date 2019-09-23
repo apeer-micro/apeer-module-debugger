@@ -1,7 +1,8 @@
-import './App.css';
-
 import React, { Component } from 'react';
+import { ThemeProvider } from '@material-ui/styles';
+import { CssBaseline } from '@material-ui/core';
 
+import theme from '../themes';
 import HomeComponent from './home/HomeComponent';
 import StartComponent from './start/StartComponent';
 
@@ -32,9 +33,10 @@ class App extends Component {
     }
 
     return (
-      <div>
-       {currentComponent}
-      </div>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {currentComponent}
+      </ThemeProvider>
     );
   }
 }
