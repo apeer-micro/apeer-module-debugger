@@ -23,6 +23,10 @@ const styles = theme => ({
     position: 'fixed',
     bottom: theme.spacing(2),
     right: theme.spacing(2),
+  },
+
+  pre: {
+    whiteSpace: 'pre-wrap'
   }
 });
 
@@ -116,12 +120,7 @@ class BuildComponent extends React.Component {
               To build module and see the build logs, click on Build
             </Typography>
           ) : (
-            <Typography variant='body1'>
-              <pre>{this.state.build.log}</pre>
-              <pre>{this.state.build.log}</pre>
-              <pre>{this.state.build.log}</pre>
-              <pre>{this.state.build.log}</pre>
-            </Typography>
+            <pre className={classes.pre}>{this.state.build.log}</pre>
           )}
         </Paper>
       </React.Fragment>

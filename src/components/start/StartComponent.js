@@ -52,23 +52,19 @@ class StartComponent extends React.Component {
 
     return (
       <div className={classes.main}>
-        <div>
-          <img className="logo" src={logo} alt="logo" />
-          <h1 className="text-white header-title">Module Debugger</h1>
-        </div>
-        <div className="d-flex flex-column mt-5">
-          <h3 className="text-white pb-3">
-           Open your module folder to start building!
-          </h3>
+        <img className="logo" src={logo} alt="logo" />
+        <h1 className="header-title">Module Debugger</h1>
+        <h3 className="text-white pb-3">
+         Open your module folder to start building!
+        </h3>
 
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            onClick={() => this.openFolder()}>
-            Open Module Folder
-          </Button>
-        </div>
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          onClick={() => this.openFolder()}>
+          Open Module Folder
+        </Button>
       </div>
     );
   }

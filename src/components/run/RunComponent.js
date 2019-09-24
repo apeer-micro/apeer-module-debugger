@@ -22,6 +22,10 @@ const styles = theme => ({
   main: {
     padding: theme.spacing(3, 2),
     margin: theme.spacing(1),
+  },
+
+  pre: {
+    whiteSpace: 'pre-wrap'
   }
 });
 
@@ -176,9 +180,7 @@ class RunComponent extends React.Component {
             ) : (
               ''
             )}
-            <Typography variant='body1'>
-              <pre>{this.state.run.log}</pre>
-            </Typography>
+            <pre className={classes.pre}>{this.state.run.log}</pre>
           </div>
         ) : (
           <span className="text-white m-2 row">
