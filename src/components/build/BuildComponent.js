@@ -5,7 +5,6 @@ import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { Typography } from '@material-ui/core';
-import Fab from '@material-ui/core/Fab';
 
 const { exec } = window.require('child_process');
 
@@ -101,15 +100,6 @@ class BuildComponent extends React.Component {
           disabled={this.state.build.inProgress}>
           Build
         </Button>
-
-        <Fab
-          variant="extended"
-          color="primary"
-          onClick={this.onBuildButtonClick}
-          disabled={this.state.build.inProgress}
-          className={classes.fab}>
-          Build
-        </Fab>
 
         <Paper className={classes.console}>
           <Typography variant="h5" component="h3">
