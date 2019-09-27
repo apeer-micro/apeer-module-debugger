@@ -14,12 +14,13 @@
     "update-electron-app": "^1.2.0"
   },
   "dependencies": {
+    "@material-ui/core": "^4.4.3",
+    "@material-ui/styles": "^4.4.3",
     "concurrently": "4.1.1",
     "electron-is-dev": "1.1.0",
     "fs-extra": "^8.0.1",
     "prettier": "^1.4.4",
     "react-scripts": "^3.1.1",
-    "react-stepper-horizontal": "^1.0.11",
     "toastr": "^2.1.4",
     "wait-on": "3.3.0"
   },
@@ -31,11 +32,11 @@
     "react-test": "react-scripts test --env=jsdom",
     "react-eject": "react-scripts eject",
     "electron-build": "electron-builder",
-    "release": "yarn react-build && electron-builder --win --mac --publish=always",
-    "build-all": "yarn react-build && yarn electron-build --win --mac",
-    "build": "yarn react-build && yarn electron-build",
-    "start": "concurrently \"cross-env BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && electron .\"",
-    "preelectron-pack": "yarn build",
+    "release": "npm run react-build && electron-builder --win --mac --publish=always",
+    "build-all": "npm run react-build && npm run electron-build --win --mac",
+    "build": "npm run react-build && npm run electron-build",
+    "start": "concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
+    "preelectron-pack": "npm run build",
     "electron-pack": "build  -c.extraMetadata.main = build/electron.js"
   },
   "build": {

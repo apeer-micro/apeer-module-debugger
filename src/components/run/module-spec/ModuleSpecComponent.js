@@ -1,14 +1,35 @@
-import './ModuleSpecComponent.css';
 import 'toastr/build/toastr.min.css';
 
 import path from 'path';
 import React from 'react';
 import toastr from 'toastr';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import { withStyles } from '@material-ui/core/styles';
+import Input from '@material-ui/core/Input';
+import { FormHelperText } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 
 const fs = window.require('fs');
 
+const styles = theme => ({
+  button: {
+    margin: theme.spacing(1),
+  },
+
+  main: {
+    padding: theme.spacing(3, 2),
+    margin: theme.spacing(1),
+  },
+
+  formControl: {
+    width: '100%',
+    marginBottom: theme.spacing(2)
+  }
+});
+
 //Module spec
-export default class ModuleSpecComponent extends React.Component {
+class ModuleSpecComponent extends React.Component {
   constructor(props) {
     super(props);
     let inputs = this.setupInputs();
@@ -59,6 +80,8 @@ export default class ModuleSpecComponent extends React.Component {
   }
 
   createForm() {
+    const { classes } = this.props;
+
     let spec = this.state.inputs.map((input, i) => {
       let inputType;
       let multipleFile = false;
@@ -82,43 +105,42 @@ export default class ModuleSpecComponent extends React.Component {
       }
 
       return (
-        <div className="form-group" key={input.name}>
-          <label className="text-white">{input.name}</label>
+        <FormControl className={classes.formControl}>
+          <InputLabel shrink={true} htmlFor={input.name}>{input.name}</InputLabel>
           {inputType === 'file' ? (
-            <div className="input-group">
-              <input
-                type={inputType}
-                name={input.name}
-                id={input.name}
-                multiple={multipleFile}
-                className="form-control-file text-white"
-                required
-              />
-              <div className="invalid-feedback">Input required</div>
-            </div>
+            <Input
+              type={inputType}
+              name={input.name}
+              id={input.name}
+              multiple={multipleFile}
+              required
+            />
           ) : (
-            <div className="input-group">
-              <input
-                type={inputType}
-                name={input.name}
-                id={input.name}
-                className="form-control"
-                required
-              />
-              <div className="invalid-feedback">Input required</div>
-            </div>
+            <Input
+              type={inputType}
+              name={input.name}
+              id={input.name}
+              required
+            />
           )}
-        </div>
+          <FormHelperText>Input Required</FormHelperText>
+        </FormControl>
       );
     });
 
     return (
       <React.Fragment>
-        <form className="d-flex flex-column module-inputs">
+        <form>
           {spec}
-          <button type="button" className="btn btn-primary mt-5 btn-run" onClick={this.onClick} disabled={this.props.disableRunButton}>
+
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={this.onClick}
+            disabled={this.props.disableRunButton}>
             Run
-          </button>
+          </Button>
         </form>
       </React.Fragment>
     );
@@ -129,3 +151,5 @@ export default class ModuleSpecComponent extends React.Component {
     return <React.Fragment>{form}</React.Fragment>;
   }
 }
+
+export default withStyles(styles)(ModuleSpecComponent);
