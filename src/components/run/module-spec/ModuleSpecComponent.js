@@ -112,7 +112,7 @@ class ModuleSpecComponent extends React.Component {
               type={inputType}
               name={input.name}
               id={input.name}
-              multiple={multipleFile}
+              inputProps={{ multiple: multipleFile }}
               required
             />
           ) : (
