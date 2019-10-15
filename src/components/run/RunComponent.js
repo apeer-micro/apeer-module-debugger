@@ -80,7 +80,7 @@ class RunComponent extends React.Component {
           envVariable += `,"${input.name}":"${input.value}"`;
           break;
         default:
-          envVariable += `,"${input.name}":${input.value}`;
+          envVariable += `,"${input.name}":"${input.value}"`;
           break;
       }
     });
