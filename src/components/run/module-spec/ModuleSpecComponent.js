@@ -1,14 +1,14 @@
 import 'toastr/build/toastr.min.css';
 
+import { FormHelperText } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import { withStyles } from '@material-ui/core/styles';
 import path from 'path';
 import React from 'react';
 import toastr from 'toastr';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import { withStyles } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
-import { FormHelperText } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
 
 const fs = window.require('fs');
 
@@ -73,6 +73,7 @@ class ModuleSpecComponent extends React.Component {
     const inputs = keys.map(x => {
       return {
         name: x,
+        default: json.spec.inputs[x].default,
         type: Object.keys(json.spec.inputs[x])[0].replace(/^type:/g, '')
       };
     });
@@ -120,6 +121,7 @@ class ModuleSpecComponent extends React.Component {
               type={inputType}
               name={input.name}
               id={input.name}
+              value={input.default}
               required
             />
           )}
