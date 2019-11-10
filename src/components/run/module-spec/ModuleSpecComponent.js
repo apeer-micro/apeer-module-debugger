@@ -6,11 +6,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import { withStyles } from '@material-ui/core/styles';
-import path from 'path';
 import React from 'react';
 import toastr from 'toastr';
-
-const fs = window.require('fs');
 
 const styles = theme => ({
   button: {
@@ -32,10 +29,10 @@ const styles = theme => ({
 class ModuleSpecComponent extends React.Component {
   constructor(props) {
     super(props);
-    let inputs = this.setupInputs();
     this.state = {
-      inputs: inputs
+      inputs: this.setupInputs(this.props.json),
     };
+
     this.onClick = this.onClick.bind(this);
   }
 
@@ -65,10 +62,7 @@ class ModuleSpecComponent extends React.Component {
     }
   }
 
-  setupInputs() {
-    var specFile = path.join(this.props.module.path, 'module_specification.json');
-    let rawData = fs.readFileSync(specFile);
-    let json = JSON.parse(rawData);
+  setupInputs(json) {
     var keys = Object.keys(json.spec.inputs);
     const inputs = keys.map(x => {
       return {
@@ -117,14 +111,14 @@ class ModuleSpecComponent extends React.Component {
               required
             />
           ) : (
-            <Input
-              type={inputType}
-              name={input.name}
-              id={input.name}
-              value={input.default}
-              required
-            />
-          )}
+              <Input
+                type={inputType}
+                name={input.name}
+                id={input.name}
+                value={input.default}
+                required
+              />
+            )}
           <FormHelperText>Input Required</FormHelperText>
         </FormControl>
       );
@@ -149,8 +143,8 @@ class ModuleSpecComponent extends React.Component {
   }
 
   render() {
-    var form = this.createForm();
-    return <React.Fragment>{form}</React.Fragment>;
+    let body = this.createForm();
+    return <React.Fragment>{body}</React.Fragment>;
   }
 }
 
