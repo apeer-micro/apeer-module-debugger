@@ -115,7 +115,7 @@ class ModuleSpecComponent extends React.Component {
                 type={inputType}
                 name={input.name}
                 id={input.name}
-                value={input.default}
+                defaultValue={input.default}
                 required
               />
             )}
