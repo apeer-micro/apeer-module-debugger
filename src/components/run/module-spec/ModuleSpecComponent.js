@@ -1,16 +1,13 @@
 import 'toastr/build/toastr.min.css';
 
-import path from 'path';
-import React from 'react';
-import toastr from 'toastr';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import { withStyles } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
 import { FormHelperText } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-
-const fs = window.require('fs');
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import { withStyles } from '@material-ui/core/styles';
+import React from 'react';
+import toastr from 'toastr';
 
 const styles = theme => ({
   button: {
@@ -32,10 +29,10 @@ const styles = theme => ({
 class ModuleSpecComponent extends React.Component {
   constructor(props) {
     super(props);
-    let inputs = this.setupInputs();
     this.state = {
-      inputs: inputs
+      inputs: this.setupInputs(this.props.json),
     };
+
     this.onClick = this.onClick.bind(this);
   }
 
@@ -65,14 +62,12 @@ class ModuleSpecComponent extends React.Component {
     }
   }
 
-  setupInputs() {
-    var specFile = path.join(this.props.module.path, 'module_specification.json');
-    let rawData = fs.readFileSync(specFile);
-    let json = JSON.parse(rawData);
+  setupInputs(json) {
     var keys = Object.keys(json.spec.inputs);
     const inputs = keys.map(x => {
       return {
         name: x,
+        default: json.spec.inputs[x].default,
         type: Object.keys(json.spec.inputs[x])[0].replace(/^type:/g, '')
       };
     });
@@ -106,7 +101,7 @@ class ModuleSpecComponent extends React.Component {
 
       return (
         <FormControl className={classes.formControl}>
-          <InputLabel shrink={true} htmlFor={input.name}>{input.name}</InputLabel>
+          <InputLabel shrink={true} htmlFor={input.name}>{input.name}</InputLabel >
           {inputType === 'file' ? (
             <Input
               type={inputType}
@@ -116,13 +111,14 @@ class ModuleSpecComponent extends React.Component {
               required
             />
           ) : (
-            <Input
-              type={inputType}
-              name={input.name}
-              id={input.name}
-              required
-            />
-          )}
+              <Input
+                type={inputType}
+                name={input.name}
+                id={input.name}
+                defaultValue={input.default}
+                required
+              />
+            )}
           <FormHelperText>Input Required</FormHelperText>
         </FormControl>
       );
@@ -147,8 +143,8 @@ class ModuleSpecComponent extends React.Component {
   }
 
   render() {
-    var form = this.createForm();
-    return <React.Fragment>{form}</React.Fragment>;
+    let body = this.createForm();
+    return <React.Fragment>{body}</React.Fragment>;
   }
 }
 

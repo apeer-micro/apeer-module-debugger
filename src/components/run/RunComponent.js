@@ -1,12 +1,14 @@
 import 'toastr/build/toastr.min.css';
-import React from 'react';
-import toastr from 'toastr';
-import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import linkIcon from '../../assets/icons/link.svg';
-import ModuleSpecComponent from './module-spec/ModuleSpecComponent';
+
 import { Typography } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
+import Paper from '@material-ui/core/Paper';
+import { withStyles } from '@material-ui/core/styles';
+import React from 'react';
+import toastr from 'toastr';
+
+import linkIcon from '../../assets/icons/link.svg';
+import ModuleSpecComponent from './module-spec/ModuleSpecComponent';
 
 const process = window.require('process');
 const fs = window.require('fs-extra');
@@ -32,10 +34,23 @@ const styles = theme => ({
 class RunComponent extends React.Component {
   constructor(props) {
     super(props);
+    let json = '';
+    let specError = '';
+    try {
+      var specFile = path.join(this.props.module.path, 'module_specification.json');
+      let rawData = fs.readFileSync(specFile);
+      json = JSON.parse(rawData);
+    }
+    catch (e) {
+      specError = e;
+    }
+
     this.state = {
       run: this.props.run,
       outputFolder: path.join(this.props.module.path, 'output'),
-      inputFolder: path.join(this.props.module.path, 'input')
+      inputFolder: path.join(this.props.module.path, 'input'),
+      json: json,
+      specError: specError
     };
 
     this.onRunButtonClick = this.onRunButtonClick.bind(this);
@@ -75,6 +90,10 @@ class RunComponent extends React.Component {
           });
           envVariable = envVariable.replace(/,$/g, '');
           envVariable += ']';
+          break;
+        case 'number':
+        case 'integer':
+          envVariable += `,"${input.name}":${input.value}`;
           break;
         case 'string':
           envVariable += `,"${input.name}":"${input.value}"`;
@@ -157,36 +176,57 @@ class RunComponent extends React.Component {
 
   render() {
     const { classes } = this.props;
+    var body;
+
+    if (this.props.buildState) {
+      if (this.state.json !== '') {
+        body = (
+          <div>
+            <ModuleSpecComponent
+              json={this.state.json}
+              disableRunButton={this.state.run.inProgress}
+              onRunButtonClick={this.onRunButtonClick}
+            />
+            <div>
+              <Link variant="body1" href="#" onClick={this.openOutputFolder}>
+                Open Output Folder
+                &nbsp;
+                <img src={linkIcon} className="pl-2" alt="test" />
+              </Link>
+
+              {this.state.run.log === '' || !this.state.run.log ? (
+                <Typography variant='body1'>
+                  To see module run logs, select the module inputs and click on run
+                </Typography>
+              ) : (
+                  ''
+                )}
+            </div>
+            <pre className={classes.pre}>{this.state.run.log}</pre>
+          </div>
+        );
+      }
+      else {
+        body = (
+          <React.Fragment>
+            <span>Error in module specification file, Please rebuild the module after fixing it</span>
+            <pre className={classes.pre}>{this.state.specError.message}</pre>
+            <pre className={classes.pre}>{this.state.specError.stack}</pre>
+          </React.Fragment>
+        );
+      }
+    }
+    else {
+      body = (
+        <span className="text-white m-2 row">
+          Build the module successfully to start running it.
+      </span>
+      );
+    }
 
     return (
       <Paper className={classes.main}>
-        {this.props.buildState ? (
-          <div>
-            <ModuleSpecComponent
-              module={this.props.module}
-              disableRunButton = {this.state.run.inProgress}
-              onRunButtonClick={this.onRunButtonClick}
-            />
-            <Link variant="body1" href="#" onClick={this.openOutputFolder}>
-              Open Output Folder
-              &nbsp;
-              <img src={linkIcon} className="pl-2" alt="test"/>
-            </Link>
-
-            {this.state.run.log === '' || !this.state.run.log ? (
-              <Typography variant='body1'>
-                To see module run logs, select the module inputs and click on run
-              </Typography>
-            ) : (
-              ''
-            )}
-            <pre className={classes.pre}>{this.state.run.log}</pre>
-          </div>
-        ) : (
-          <span className="text-white m-2 row">
-            Build the module successfully to start running it.
-          </span>
-        )}
+        {body}
       </Paper>
     );
   }
