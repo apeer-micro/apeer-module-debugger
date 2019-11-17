@@ -91,6 +91,10 @@ class RunComponent extends React.Component {
           envVariable = envVariable.replace(/,$/g, '');
           envVariable += ']';
           break;
+        case 'number':
+        case 'integer':
+          envVariable += `,"${input.name}":${input.value}`;
+          break;
         case 'string':
           envVariable += `,"${input.name}":"${input.value}"`;
           break;

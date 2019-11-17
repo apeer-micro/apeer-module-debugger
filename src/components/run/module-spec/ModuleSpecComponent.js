@@ -101,7 +101,7 @@ class ModuleSpecComponent extends React.Component {
 
       return (
         <FormControl className={classes.formControl}>
-          <InputLabel shrink={true} htmlFor={input.name}>{input.name}</InputLabel>
+          <InputLabel shrink={true} htmlFor={input.name}>{input.name}</InputLabel >
           {inputType === 'file' ? (
             <Input
               type={inputType}
