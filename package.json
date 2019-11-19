@@ -2,7 +2,7 @@
   "name": "apeer-module-debugger",
   "productName": "APEER Module Debugger",
   "author": "Apeer",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "private": true,
   "devDependencies": {
     "cross-env": "5.2.0",
