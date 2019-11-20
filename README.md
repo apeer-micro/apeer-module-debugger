@@ -1,7 +1,9 @@
 [![Build Status](https://dev.azure.com/apeer-micro/apeer-open-source/_apis/build/status/apeer-micro.apeer-module-debugger?branchName=master)](https://dev.azure.com/apeer-micro/apeer-open-source/_build/latest?definitionId=1&branchName=master)
 ![Platform Supported](https://img.shields.io/badge/platform-windows%20%7C%20macos-lightgrey)
 
----
+## What it does
+Our Apeer Module Debugger is an application that can be used to build and run [APEER](https://www.apeer.com) modules locally
+
 
 ## How to Use
 - You can read a comprehensive tutorial at <https://docs.apeer.com/create-modules/module-debugging>
