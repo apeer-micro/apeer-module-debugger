@@ -15,14 +15,14 @@ steps:
 
 - script: |
     export GH_TOKEN=$(GH_TOKEN)
-    yarn install
-    yarn build-all
+    npm install
+    npm run build-all
   displayName: 'ci build for non-master branch'
   condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
 
 - script: |
     export GH_TOKEN=$(GH_TOKEN)
-    yarn install
-    yarn release
+    npm install
+    npm run release
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   displayName: 'ci build and deployment from master'
