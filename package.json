@@ -20,10 +20,14 @@
     "electron-is-dev": "1.1.0",
     "fs-extra": "^8.0.1",
     "jslint": "^0.12.1",
+    "jsonschema": "^1.2.5",
     "prettier": "^1.4.4",
     "react-scripts": "^3.3.0",
     "toastr": "^2.1.4",
     "wait-on": "3.3.0"
+  },
+  "resolutions": {
+    "jsonschema": "1.2.2"
   },
   "homepage": "./",
   "main": "public/electron.js",

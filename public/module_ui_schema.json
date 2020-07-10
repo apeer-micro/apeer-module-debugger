@@ -1,0 +1,275 @@
+{
+    "title": "Module Contract",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+  
+    "definitions": {
+      "Ui": {
+        "title": "UI specification",
+        "description": "UI specification of all of the Module's inputs and outputs",
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "$ref": "#/definitions/UiInputs"
+          },
+          "outputs": {
+            "$ref": "#/definitions/UiOutputs"
+          }
+        },
+        "additionalProperties": false
+      },
+  
+      "UiInputs": {
+        "title": "UI specification of inputs",
+        "description": "A dictionary of the UI elements which should be used to provide a Module's inputs. Use the same key as for the functional input specification to define a UI element for it",
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/definitions/UiInput"
+        }
+      },
+  
+      "UiInput": {
+        "title": "UI input element",
+        "description": "Describes a single UI input element with label, ordering and UI element type",
+        "type": "object",
+        "properties": {
+          "index": {
+            "title": "Index",
+            "description": "A number by which the set of UI input elements will be ordered from lowest to highest",
+            "type": "integer"
+          },
+          "label": {
+            "title": "Label",
+            "description": "A short name for the input which will be shown near the UI element",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "description": "A more detailed description of the input value",
+            "type": "string"
+          }
+        },
+        "patternProperties": {
+          "^widget:slider$": {
+            "$ref": "#/definitions/WidgetSlider"
+          },
+          "^widget:slider_range$": {
+            "$ref": "#/definitions/WidgetSliderRange"
+          },
+          "^widget:checkbox$": {
+            "$ref": "#/definitions/WidgetCheckbox"
+          },
+          "^widget:togglebutton$": {
+            "$ref": "#/definitions/WidgetToggleButton"
+          },
+          "^widget:radiobuttongroup$": {
+            "$ref": "#/definitions/WidgetRadioButtonGroup"
+          },
+          "^widget:dropdown$": {
+            "$ref": "#/definitions/WidgetDropdown"
+          },
+          "^widget:segmented_button$": {
+            "$ref": "#/definitions/WidgetSegmentedButton"
+          },
+          "^widget:checkboxgroup$": {
+            "$ref": "#/definitions/WidgetCheckboxGroup"
+          },
+          "^widget:togglebuttongroup$": {
+            "$ref": "#/definitions/WidgetCheckboxGroup"
+          },
+          "^widget:textbox$": {
+            "$ref": "#/definitions/WidgetTextbox"
+          },
+          "^widget:textbox_multiline$": {
+            "$ref": "#/definitions/WidgetTextboxMultiline"
+          },
+          "^widget:file_dialog$": {
+            "$ref": "#/definitions/WidgetFileDialog"
+          },
+          "^widget:none$": {
+            "type": "null"
+          }
+        },
+        "required": [ "index", "label" ],
+        "oneOf": [
+          { "required": [ "widget:slider" ] },
+          { "required": [ "widget:slider_range" ] },
+          { "required": [ "widget:checkbox" ] },
+          { "required": [ "widget:togglebutton" ] },
+          { "required": [ "widget:radiobuttongroup" ] },
+          { "required": [ "widget:dropdown" ] },
+          { "required": [ "widget:segmented_button" ] },
+          { "required": [ "widget:checkboxgroup" ] },
+          { "required": [ "widget:togglebuttongroup" ] },
+          { "required": [ "widget:textbox" ] },
+          { "required": [ "widget:textbox_multiline" ] },
+          { "required": [ "widget:file_dialog" ] },
+          { "required": [ "widget:none" ] }
+        ],
+        "additionalProperties": false
+      },
+  
+      "WidgetSlider": {
+        "title": "UI element 'Slider'",
+        "description": "A UI element which lets the user drag a slider to establish a value. The UI guarantees that minimum and maximum are reachable.",
+        "type": "object",
+        "properties": {
+          "step": {
+            "title": "Step",
+            "description": "The size of the steps in which the slider can be dragged. The step should align with minima and maxima set in the functional specification. If not specified, the UI will use the smallest step feasible.",
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "additionalProperties": false
+      },
+  
+      "WidgetSliderRange": {
+        "title": "UI element 'Range slider'",
+        "description": "A UI element which lets the user drag a minimum and maximum slider to establish a range of values. The UI guarantees that minima and maxima are reachable.",
+        "type": "object",
+        "properties": {
+          "step": {
+            "title": "Step",
+            "description": "The size of the steps in which the sliders can be dragged. The step should align with the minima and maxima set for the bounds and the delta in the functional specification. If not specified, the UI will use the smallest step feasible.",
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "additionalProperties": false
+      },
+  
+      "WidgetChoiceBase": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "title": "Items",
+            "description": "An array of items from which to choose which specifies the order of the choices and the label for each key. If no label is provided for a key, the UI will use the key's name.",
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/StringResource"
+            },
+            "minItems": 1
+          }
+        }
+      },
+  
+      "WidgetRadioButtonGroup": {
+        "title": "UI element 'Radio button group'",
+        "description": "A UI element which lets the user choose one item from a set of items. If no label dictionary is provided, the UI will use the key's names.",
+        "allOf": [ { "$ref": "#/definitions/WidgetChoiceBase" } ],
+        "properties": { "items": {} },
+        "additionalProperties": false
+      },
+  
+      "WidgetDropdown": {
+        "title": "UI element 'Dropdown'",
+        "description": "A UI element which lets the user choose one item from a set of items. If no labels are provided, the UI will use the key's names.",
+        "allOf": [ { "$ref": "#/definitions/WidgetChoiceBase" } ],
+        "properties": { "items": {} },
+        "additionalProperties": false
+      },
+  
+      "WidgetSegmentedButton": {
+        "title": "UI element 'Segmented Button'",
+        "description": "A UI element which lets the user choose one item from a set of items. If no labels are provided, the UI will use the key's names.",
+        "allOf": [ { "$ref": "#/definitions/WidgetChoiceBase" } ],
+        "properties": { "items": {} },
+        "additionalProperties": false
+      },
+  
+      "WidgetCheckbox": {
+        "title": "UI element 'Checkbox'",
+        "description": "A UI element which lets the user switch something on and off.",
+        "type": "object",
+        "additionalProperties": false
+      },
+  
+      "WidgetToggleButton": {
+        "title": "UI element 'ToggleButton'",
+        "description": "A UI element which lets the user switch something on and off.",
+        "type": "object",
+        "additionalProperties": false
+      },
+  
+      "WidgetCheckboxGroup": {
+        "title": "UI element 'Checkbox group'",
+        "description": "A UI element which lets the user choose multiple items from a set of items via a group of checkboxes. If no labels are provided, the UI will use the key's names.",
+        "allOf": [ { "$ref": "#/definitions/WidgetChoiceBase" } ],
+        "properties": { "items": {} },
+        "additionalProperties": false
+      },
+  
+      "WidgetToggleButtonGroup": {
+        "title": "UI element 'Toggle button group'",
+        "description": "A UI element which lets the user choose multiple items from a set of items via a group of toggle buttons. If no labels are provided, the UI will use the key's names.",
+        "allOf": [ { "$ref": "#/definitions/WidgetChoiceBase" } ],
+        "properties": { "items": {} },
+        "additionalProperties": false
+      },
+  
+      "WidgetTextbox": {
+        "title": "UI element 'Textbox'",
+        "description": "A UI element which lets the user enter a short, single line string",
+        "type": "object",
+        "additionalProperties": false
+      },
+  
+      "WidgetTextboxMultiline": {
+        "title": "UI element 'Multiline textbox'",
+        "description": "A UI element which lets the user enter a long, multiline string",
+        "type": "object",
+        "additionalProperties": false
+      },
+  
+      "WidgetFileDialog": {
+        "title": "UI element 'File dialog'",
+        "description": "A UI element which lets the user select a file with a file explorer",
+        "type": "object",
+        "additionalProperties": false
+      },
+  
+      "UiOutputs": {
+        "title": "UI specification of outputs",
+        "description": "A dictionary of the UI elements which should be used to show a Module's outputs. Use the same key as for the functional output specification to define a UI element for it",
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/definitions/UiOutput"
+        }
+      },
+  
+      "UiOutput": {
+        "title": "UI output element",
+        "description": "Describes a single UI output element with label and ordering",
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer"
+          },
+          "label": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [ "index", "label" ],
+        "additionalProperties": false
+      },
+  
+      "StringResource": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [ "key", "label" ],
+        "additionalProperties": false
+      }
+    }
+  }

@@ -1,0 +1,81 @@
+{
+    "title": "Module Contract",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    
+    "definitions": {    
+      
+      "File": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "additionalProperties": false
+      },
+        
+      "Range": {
+        "type": "object",
+        "properties": {
+          "lower_inclusive": {
+            "type": "number"
+          },
+          "lower_exclusive": {
+            "type": "number"
+          },
+          "upper_inclusive": {
+            "type": "number"
+          },
+          "upper_exclusive": {
+            "type": "number"
+          }
+        },
+        "not": {
+          "anyOf": [
+            { "required": ["lower_inclusive","lower_exclusive"] },
+            { "required": ["upper_inclusive","upper_exclusive"] }
+          ]
+        },
+        "additionalProperties": false
+      },
+        
+      "ChoiceMultiple": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1,
+        "uniqueItems": true
+      },
+        
+      "List[Number]": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "minItems": 1
+      },
+        
+      "List[File]": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/File"
+        },
+        "minItems": 1
+      },
+      
+      "List[String]" : {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 0
+      },
+      
+      "EmptyList": {
+        "type": "array",
+        "maxItems": 0
+      }
+    }
+  }

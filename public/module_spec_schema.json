@@ -1,0 +1,1036 @@
+{
+    "title": "Module Contract",
+    "$id": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+  
+    "type": "object",
+    "properties": {
+      "spec": {
+        "$ref": "#/definitions/Spec"
+      },
+      "requirements": {
+        "$ref": "#/definitions/Requirements"
+      },
+      "image": {
+        "$ref": "#/definitions/Image"
+      },
+      "ui": {
+        "$ref": "#/definitions/Ui"
+      }
+    },
+    "required": ["spec"],
+    "additionalProperties": false,
+  
+  
+    "definitions": {
+  
+      "Spec": {
+        "title": "Functional specification",
+        "description": "The functional specification of all Module inputs and outputs",
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "$ref": "#/definitions/Inputs"
+          },
+          "outputs": {
+            "$ref": "#/definitions/Outputs"
+          }
+        },
+        "required": [ "inputs", "outputs" ],
+        "additionalProperties": false
+      },
+  
+      "Inputs": {
+        "title": "Inputs",
+        "description": "A dictionary of all of the Module's inputs",
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/definitions/Input"
+        }
+      },
+  
+      "InputBase": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+  
+      "InputPropertyDummy": {
+        "type": "object",
+        "properties": {
+          "description": {},
+          "default": {},
+          "depends_on": {},
+          "type:integer": {},
+          "type:number": {},
+          "type:range": {},
+          "type:string": {},
+          "type:file": {},
+          "type:choice_binary": {},
+          "type:choice_single": {},
+          "type:choice_multiple": {},
+          "type:list[number]": {},
+          "type:list[file]": {},
+          "type:list[string]": {}
+        },
+        "additionalProperties": false
+      },
+  
+      "Input": {
+        "title": "Input",
+        "description": "Describes a single Module input with its type and type-specific constraints and its default value.",
+        "allOf": [
+          { "$ref": "#/definitions/InputBase" },
+          { "$ref": "#/definitions/InputPropertyDummy" },
+          {
+            "oneOf": [
+              { "$ref": "#/definitions/InputInteger" },
+              { "$ref": "#/definitions/InputNumber" },
+              { "$ref": "#/definitions/InputRange" },
+              { "$ref": "#/definitions/InputString" },
+              { "$ref": "#/definitions/InputFile" },
+              { "$ref": "#/definitions/InputChoiceBinary" },
+              { "$ref": "#/definitions/InputChoiceSingle" },
+              { "$ref": "#/definitions/InputChoiceMultiple" },
+              { "$ref": "#/definitions/InputList[Number]" },
+              { "$ref": "#/definitions/InputList[File]" },
+              { "$ref": "#/definitions/InputList[String]" }
+            ]
+          }
+        ]
+      },
+  
+      "InputInteger": {
+        "title": "Integer input",
+        "description": "Input for the Module which is given as an integer.",
+        "allOf": [
+          { "$ref": "#/definitions/TypeInteger" },
+          {
+            "type": "object",
+            "properties": {
+              "default": {
+                "type": "integer"
+              }
+            }
+          }
+        ]
+      },
+  
+      "InputNumber": {
+        "title": "Number input",
+        "description": "Input for the Module which is given as a decimal number. For integers, the input type 'type:integer' should be used.",
+        "allOf": [
+          { "$ref": "#/definitions/TypeNumber" },
+          {
+            "type": "object",
+            "properties": {
+              "default": {
+                "type": "number"
+              }
+            }
+          }
+        ]
+      },
+  
+      "InputRange": {
+        "title": "Range input",
+        "description": "Input for the Module which is given as a range of decimal numbers",
+        "allOf": [
+          { "$ref": "#/definitions/TypeRange" },
+          {
+            "type": "object",
+            "properties": {
+              "default": {
+                "$ref": "#/definitions/Range"
+              }
+            }
+          }
+        ]
+      },
+  
+      "InputString": {
+        "title": "String input",
+        "description": "Input for the Module which is given as a string",
+        "allOf": [
+          { "$ref": "#/definitions/TypeString" },
+          {
+            "type": "object",
+            "properties": {
+              "default": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+  
+      "InputFile": {
+        "title": "File input",
+        "description": "Input for the Module which is given as file, e. g. a picture",
+        "allOf": [
+          { "$ref": "#/definitions/TypeFile" },
+          {
+            "type": "object",
+            "properties": {
+              "default": {
+                "$ref": "#/definitions/File"
+              }
+            }
+          }
+        ]
+      },
+  
+      "InputChoiceSingle": {
+        "title": "Single choice input",
+        "description": "Input for the Module which is given by the choice of a single key from a list of keys",
+        "oneOf": [
+          { "$ref": "#/definitions/InputChoiceSingleIndependent" },
+          { "$ref": "#/definitions/InputChoiceSingleDependent" }
+        ]
+      },
+  
+      "InputChoiceSingleIndependent": {
+        "type": "object",
+        "properties": {
+          "type:choice_single": {
+            "oneOf": [
+              { "$ref": "#/definitions/ChoiceConstraint" },
+              { "$ref": "#/definitions/ExternalReference" }
+            ]
+          },
+          "default": {
+            "title": "Default choice",
+            "description": "The key which is chosen when no other choice was made",
+            "type": "string"
+          }
+        },
+        "required": [ "type:choice_single" ],
+        "additionalProperties": false
+      },
+  
+      "InputChoiceSingleDependent": {
+        "type": "object",
+        "properties": {
+          "depends_on": {
+            "description": "An array of input names this input depends on.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "type:choice_single": {
+            "$ref": "#/definitions/ExternalReference"
+          }
+        },
+        "required": [ "depends_on", "type:choice_single" ],
+        "additionalProperties": false
+      },
+  
+      "InputChoiceBinary": {
+        "title": "Binary choice input",
+        "description": "Input for the Module which is given by a binary choice",
+        "allOf": [
+          { "$ref": "#/definitions/TypeChoiceBinary" },
+          {
+            "type": "object",
+            "properties": {
+              "default": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+  
+      "InputChoiceMultiple": {
+        "title": "Multiple choices input",
+        "description": "Input for the Module which is given by the choice of a subset of keys from a list of keys",
+        "allOf": [
+          { "$ref": "#/definitions/TypeChoiceMultiple" },
+          {
+            "type": "object",
+            "properties": {
+              "default": {
+                "title": "Default choice",
+                "description": "The keys which are chosen when no other choice was made",
+                "$ref": "#/definitions/ChoiceMultiple"
+              }
+            }
+          }
+        ]
+      },
+  
+      "InputList[Number]": {
+        "title": "Number list input",
+        "description": "Input for the Module which is given by a list of Numbers",
+        "allOf": [
+          { "$ref": "#/definitions/TypeList[Number]" },
+          {
+            "type": "object",
+            "properties": {
+              "default": {
+                "$ref": "#/definitions/List[Number]"
+              }
+            }
+          }
+        ]
+      },
+  
+      "InputList[File]": {
+        "title": "File list input",
+        "description": "Input for the Module which is given by a list of Files",
+        "allOf": [
+          { "$ref": "#/definitions/TypeList[File]" },
+          {
+            "type": "object",
+            "properties": {
+              "default": {
+                "$ref": "#/definitions/List[File]"
+              }
+            }
+          }
+        ]
+      },
+  
+      "InputList[String]": {
+        "title": "String list input",
+        "description": "Input for the Module which is given by a list of Strings",
+        "allOf": [
+          {
+            "$ref": "#/definitions/TypeList[String]"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "default": {
+                "$ref": "#/definitions/List[String]"
+              }
+            }
+          }
+        ]
+      },
+      
+      "Outputs": {
+        "title": "Outputs",
+        "description": "A Dictionary of all of the Module's outputs",
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/definitions/Output"
+        }
+      },
+  
+      "OutputBase": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+  
+      "OutputPropertyDummy": {
+        "type": "object",
+        "properties": {
+          "description": {},
+          "type:integer": {},
+          "type:number": {},
+          "type:range": {},
+          "type:string": {},
+          "type:file": {},
+          "type:choice_binary": {},
+          "type:choice_single": {},
+          "type:choice_multiple": {},
+          "type:list[number]": {},
+          "type:list[file]": {}
+        },
+        "additionalProperties": false
+      },
+  
+      "Output": {
+        "title": "Output",
+        "description": "Describes a single Module output with its type and additional type-specific parameters",
+        "allOf": [
+          { "$ref": "#/definitions/OutputBase" },
+          { "$ref": "#/definitions/OutputPropertyDummy" },
+          {
+            "oneOf": [
+              { "$ref": "#/definitions/TypeInteger" },
+              { "$ref": "#/definitions/TypeNumber" },
+              { "$ref": "#/definitions/TypeRange" },
+              { "$ref": "#/definitions/TypeString" },
+              { "$ref": "#/definitions/TypeFile" },
+              { "$ref": "#/definitions/TypeChoiceBinary" },
+              { "$ref": "#/definitions/TypeChoiceSingle" },
+              { "$ref": "#/definitions/TypeChoiceMultiple" },
+              { "$ref": "#/definitions/TypeList[Number]" },
+              { "$ref": "#/definitions/TypeList[File]" }
+            ]
+          }
+        ]
+      },
+  
+      "TypeInteger": {
+        "type": "object",
+        "properties": {
+          "type:integer": {
+            "$ref": "#/definitions/IntegerConstraint"
+          }
+        },
+        "required": [ "type:integer" ]
+      },
+  
+      "TypeNumber": {
+        "type": "object",
+        "properties": {
+          "type:number": {
+            "$ref": "#/definitions/NumberConstraint"
+          }
+        },
+        "required": [ "type:number" ]
+      },
+  
+      "TypeRange": {
+        "type": "object",
+        "properties": {
+          "type:range": {
+            "$ref": "#/definitions/RangeConstraint"
+          }
+        },
+        "required": [ "type:range" ]
+      },
+  
+      "TypeString": {
+        "type": "object",
+        "properties": {
+          "type:string": {
+            "$ref": "#/definitions/StringConstraint"
+          }
+        },
+        "required": [ "type:string" ]
+      },
+  
+      "TypeFile": {
+        "type": "object",
+        "properties": {
+          "type:file": {
+            "$ref": "#/definitions/FileConstraint"
+          }
+        },
+        "required": [ "type:file" ]
+      },
+  
+      "TypeChoiceBinary": {
+        "type": "object",
+        "properties": {
+          "type:choice_binary": {
+            "type": "null"
+          }
+        },
+        "required": [ "type:choice_binary" ]
+      },
+  
+      "TypeChoiceSingle": {
+        "type": "object",
+        "properties": {
+          "type:choice_single": {
+            "oneOf": [
+              { "$ref": "#/definitions/ChoiceConstraint" },
+              { "$ref": "#/definitions/ExternalReference" }
+            ]
+          }
+        },
+        "required": [ "type:choice_single" ]
+      },
+  
+      "TypeChoiceMultiple": {
+        "type": "object",
+        "properties": {
+          "type:choice_multiple": {
+            "oneOf": [
+              { "$ref": "#/definitions/ChoiceMultipleConstraint" },
+              { "$ref": "#/definitions/ExternalReference" }
+            ]
+          }
+        },
+        "required": [ "type:choice_multiple" ]
+      },
+  
+      "TypeList[Number]": {
+        "type": "object",
+        "properties": {
+          "type:list[number]": {
+            "properties": {
+              "count": {
+                "$ref": "#/definitions/NonNegativeIntegerConstraint"
+              }
+            }
+          }
+        },
+        "required": [ "type:list[number]" ]
+      },
+  
+      "TypeList[File]": {
+        "type": "object",
+        "properties": {
+          "type:list[file]": {
+            "properties": {
+              "count": {
+                "$ref": "#/definitions/NonNegativeIntegerConstraint"
+              },
+              "format": {
+                "$ref": "#/definitions/FileFormatConstraint"
+              }
+            }
+          }
+        },
+        "required": [ "type:list[file]" ]
+      },
+      
+      "TypeList[String]" : {
+        "type": "object",
+        "properties": {
+          "type:list[string]": {
+            "properties": {
+              "count": {
+                "$ref": "#/definitions/NonNegativeIntegerConstraint"
+              }
+            }
+          }
+        },
+        "required": [
+          "type:list[string]"
+        ]
+      },
+  
+      "IntegerConstraint": {
+        "type": "object",
+        "properties": {
+          "min": {
+            "type": "integer"
+          },
+          "max": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false
+      },
+  
+      "NonNegativeIntegerConstraint": {
+        "type": "object",
+        "properties": {
+          "min": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "max": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      },
+  
+      "NumberConstraint": {
+        "$ref": "#/definitions/Range"
+      },
+  
+      "RangeConstraint": {
+        "type": "object",
+        "properties": {
+          "lower": {
+            "$ref": "#/definitions/Range"
+          },
+          "upper": {
+            "$ref": "#/definitions/Range"
+          },
+          "delta": {
+            "$ref": "#/definitions/Range"
+          }
+        },
+        "additionalProperties": false
+      },
+  
+      "StringConstraint": {
+        "type": "object",
+        "properties": {
+          "length": {
+            "$ref": "#/definitions/NonNegativeIntegerConstraint"
+          }
+        },
+        "additionalProperties": false
+      },
+  
+      "FileConstraint": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "$ref": "#/definitions/FileFormatConstraint"
+          }
+        },
+        "additionalProperties": false
+      },
+  
+      "FileFormatConstraint": {
+        "oneOf": [
+          {
+            "type": "string",
+            "pattern": "^\\*$"
+          },
+          {
+            "$ref": "#/definitions/FileFormat"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/FileFormat"
+            },
+            "uniqueItems": true
+          }
+        ]
+      },
+  
+      "FileFormat": {
+        "type": "string",
+        "pattern": "^([a-z]|[0-9]|_|-)+$"
+      },
+  
+      "ChoiceConstraint": {
+        "title": "List of items",
+        "description": "A list of keys from which to choose",
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "uniqueItems": true,
+        "minItems": 2
+      },
+  
+      "ChoiceMultipleConstraint": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "$ref": "#/definitions/ChoiceConstraint"
+          },
+          "selection_count": {
+            "$ref": "#/definitions/NonNegativeIntegerConstraint"
+          }
+        }
+      },
+  
+      "Requirements": {
+        "description": "requirements on the runtime environment",
+        "properties": {
+          "hardware": {
+            "$ref": "#/definitions/HardwareRequirements"
+          },
+          "network": {
+            "$ref": "#/definitions/NetworkRequirements"
+          },
+          "runtime": {
+            "$ref": "#/definitions/RuntimeRequirements"
+          }
+        },
+        "additionalProperties": false
+      },
+  
+      "HardwareRequirements": {
+        "description": "places restrictions on the hardware that the module needs to run",
+        "properties": {
+          "gpu": {
+            "$ref": "#/definitions/GpuRequirements"
+          }
+        },
+        "additionalProperties": false
+      },
+  
+      "GpuRequirements": {
+        "description": "states that the module requires a GPU to run and can contain additional specifics on that requirement",
+        "additionalProperties": false
+      },
+  
+      "NetworkRequirements": {
+        "description": "requirements referring to the network environment of the running module",
+        "properties": {
+          "internet_access": {
+            "$ref": "#/definitions/InternetAccess"
+          }
+        },
+        "additionalProperties": false
+      },
+  
+      "InternetAccess": {
+        "description": "states that the module requires internet access to work and can contain additional specifics on that requirement",
+        "additionalProperties": false
+      },
+  
+      "RuntimeRequirements": {
+        "description": "states",
+        "properties": {
+          "runtime_limit_in_minutes": {
+             "type": "integer"
+          }
+        },
+        "additionalProperties": false
+      },
+  
+      "Image": {
+        "title": "Docker image",
+        "description": "The Docker image within which the Command should be run",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+  
+      "ExternalReference": {
+        "description": "format must be URI, placeholders like '{0}' are allowed",
+        "type": "string"
+      },
+      "File": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "additionalProperties": false
+      },
+        
+      "Range": {
+        "type": "object",
+        "properties": {
+          "lower_inclusive": {
+            "type": "number"
+          },
+          "lower_exclusive": {
+            "type": "number"
+          },
+          "upper_inclusive": {
+            "type": "number"
+          },
+          "upper_exclusive": {
+            "type": "number"
+          }
+        },
+        "not": {
+          "anyOf": [
+            { "required": ["lower_inclusive","lower_exclusive"] },
+            { "required": ["upper_inclusive","upper_exclusive"] }
+          ]
+        },
+        "additionalProperties": false
+      },
+        
+      "ChoiceMultiple": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1,
+        "uniqueItems": true
+      },
+        
+      "List[Number]": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "minItems": 1
+      },
+        
+      "List[File]": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/File"
+        },
+        "minItems": 1
+      },
+      
+      "List[String]" : {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 0
+      },
+      
+      "EmptyList": {
+        "type": "array",
+        "maxItems": 0
+      },
+      "Ui": {
+        "title": "UI specification",
+        "description": "UI specification of all of the Module's inputs and outputs",
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "$ref": "#/definitions/UiInputs"
+          },
+          "outputs": {
+            "$ref": "#/definitions/UiOutputs"
+          }
+        },
+        "additionalProperties": false
+      },
+  
+      "UiInputs": {
+        "title": "UI specification of inputs",
+        "description": "A dictionary of the UI elements which should be used to provide a Module's inputs. Use the same key as for the functional input specification to define a UI element for it",
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/definitions/UiInput"
+        }
+      },
+  
+      "UiInput": {
+        "title": "UI input element",
+        "description": "Describes a single UI input element with label, ordering and UI element type",
+        "type": "object",
+        "properties": {
+          "index": {
+            "title": "Index",
+            "description": "A number by which the set of UI input elements will be ordered from lowest to highest",
+            "type": "integer"
+          },
+          "label": {
+            "title": "Label",
+            "description": "A short name for the input which will be shown near the UI element",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "description": "A more detailed description of the input value",
+            "type": "string"
+          }
+        },
+        "patternProperties": {
+          "^widget:slider$": {
+            "$ref": "#/definitions/WidgetSlider"
+          },
+          "^widget:slider_range$": {
+            "$ref": "#/definitions/WidgetSliderRange"
+          },
+          "^widget:checkbox$": {
+            "$ref": "#/definitions/WidgetCheckbox"
+          },
+          "^widget:togglebutton$": {
+            "$ref": "#/definitions/WidgetToggleButton"
+          },
+          "^widget:radiobuttongroup$": {
+            "$ref": "#/definitions/WidgetRadioButtonGroup"
+          },
+          "^widget:dropdown$": {
+            "$ref": "#/definitions/WidgetDropdown"
+          },
+          "^widget:segmented_button$": {
+            "$ref": "#/definitions/WidgetSegmentedButton"
+          },
+          "^widget:checkboxgroup$": {
+            "$ref": "#/definitions/WidgetCheckboxGroup"
+          },
+          "^widget:togglebuttongroup$": {
+            "$ref": "#/definitions/WidgetCheckboxGroup"
+          },
+          "^widget:textbox$": {
+            "$ref": "#/definitions/WidgetTextbox"
+          },
+          "^widget:textbox_multiline$": {
+            "$ref": "#/definitions/WidgetTextboxMultiline"
+          },
+          "^widget:file_dialog$": {
+            "$ref": "#/definitions/WidgetFileDialog"
+          },
+          "^widget:none$": {
+            "type": "null"
+          }
+        },
+        "required": [ "index", "label" ],
+        "oneOf": [
+          { "required": [ "widget:slider" ] },
+          { "required": [ "widget:slider_range" ] },
+          { "required": [ "widget:checkbox" ] },
+          { "required": [ "widget:togglebutton" ] },
+          { "required": [ "widget:radiobuttongroup" ] },
+          { "required": [ "widget:dropdown" ] },
+          { "required": [ "widget:segmented_button" ] },
+          { "required": [ "widget:checkboxgroup" ] },
+          { "required": [ "widget:togglebuttongroup" ] },
+          { "required": [ "widget:textbox" ] },
+          { "required": [ "widget:textbox_multiline" ] },
+          { "required": [ "widget:file_dialog" ] },
+          { "required": [ "widget:none" ] }
+        ],
+        "additionalProperties": false
+      },
+  
+      "WidgetSlider": {
+        "title": "UI element 'Slider'",
+        "description": "A UI element which lets the user drag a slider to establish a value. The UI guarantees that minimum and maximum are reachable.",
+        "type": "object",
+        "properties": {
+          "step": {
+            "title": "Step",
+            "description": "The size of the steps in which the slider can be dragged. The step should align with minima and maxima set in the functional specification. If not specified, the UI will use the smallest step feasible.",
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "additionalProperties": false
+      },
+  
+      "WidgetSliderRange": {
+        "title": "UI element 'Range slider'",
+        "description": "A UI element which lets the user drag a minimum and maximum slider to establish a range of values. The UI guarantees that minima and maxima are reachable.",
+        "type": "object",
+        "properties": {
+          "step": {
+            "title": "Step",
+            "description": "The size of the steps in which the sliders can be dragged. The step should align with the minima and maxima set for the bounds and the delta in the functional specification. If not specified, the UI will use the smallest step feasible.",
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "additionalProperties": false
+      },
+  
+      "WidgetChoiceBase": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "title": "Items",
+            "description": "An array of items from which to choose which specifies the order of the choices and the label for each key. If no label is provided for a key, the UI will use the key's name.",
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/StringResource"
+            },
+            "minItems": 1
+          }
+        }
+      },
+  
+      "WidgetRadioButtonGroup": {
+        "title": "UI element 'Radio button group'",
+        "description": "A UI element which lets the user choose one item from a set of items. If no label dictionary is provided, the UI will use the key's names.",
+        "allOf": [ { "$ref": "#/definitions/WidgetChoiceBase" } ],
+        "properties": { "items": {} },
+        "additionalProperties": false
+      },
+  
+      "WidgetDropdown": {
+        "title": "UI element 'Dropdown'",
+        "description": "A UI element which lets the user choose one item from a set of items. If no labels are provided, the UI will use the key's names.",
+        "allOf": [ { "$ref": "#/definitions/WidgetChoiceBase" } ],
+        "properties": { "items": {} },
+        "additionalProperties": false
+      },
+  
+      "WidgetSegmentedButton": {
+        "title": "UI element 'Segmented Button'",
+        "description": "A UI element which lets the user choose one item from a set of items. If no labels are provided, the UI will use the key's names.",
+        "allOf": [ { "$ref": "#/definitions/WidgetChoiceBase" } ],
+        "properties": { "items": {} },
+        "additionalProperties": false
+      },
+  
+      "WidgetCheckbox": {
+        "title": "UI element 'Checkbox'",
+        "description": "A UI element which lets the user switch something on and off.",
+        "type": "object",
+        "additionalProperties": false
+      },
+  
+      "WidgetToggleButton": {
+        "title": "UI element 'ToggleButton'",
+        "description": "A UI element which lets the user switch something on and off.",
+        "type": "object",
+        "additionalProperties": false
+      },
+  
+      "WidgetCheckboxGroup": {
+        "title": "UI element 'Checkbox group'",
+        "description": "A UI element which lets the user choose multiple items from a set of items via a group of checkboxes. If no labels are provided, the UI will use the key's names.",
+        "allOf": [ { "$ref": "#/definitions/WidgetChoiceBase" } ],
+        "properties": { "items": {} },
+        "additionalProperties": false
+      },
+  
+      "WidgetToggleButtonGroup": {
+        "title": "UI element 'Toggle button group'",
+        "description": "A UI element which lets the user choose multiple items from a set of items via a group of toggle buttons. If no labels are provided, the UI will use the key's names.",
+        "allOf": [ { "$ref": "#/definitions/WidgetChoiceBase" } ],
+        "properties": { "items": {} },
+        "additionalProperties": false
+      },
+  
+      "WidgetTextbox": {
+        "title": "UI element 'Textbox'",
+        "description": "A UI element which lets the user enter a short, single line string",
+        "type": "object",
+        "additionalProperties": false
+      },
+  
+      "WidgetTextboxMultiline": {
+        "title": "UI element 'Multiline textbox'",
+        "description": "A UI element which lets the user enter a long, multiline string",
+        "type": "object",
+        "additionalProperties": false
+      },
+  
+      "WidgetFileDialog": {
+        "title": "UI element 'File dialog'",
+        "description": "A UI element which lets the user select a file with a file explorer",
+        "type": "object",
+        "additionalProperties": false
+      },
+  
+      "UiOutputs": {
+        "title": "UI specification of outputs",
+        "description": "A dictionary of the UI elements which should be used to show a Module's outputs. Use the same key as for the functional output specification to define a UI element for it",
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/definitions/UiOutput"
+        }
+      },
+  
+      "UiOutput": {
+        "title": "UI output element",
+        "description": "Describes a single UI output element with label and ordering",
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer"
+          },
+          "label": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [ "index", "label" ],
+        "additionalProperties": false
+      },
+  
+      "StringResource": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [ "key", "label" ],
+        "additionalProperties": false
+      }
+    }
+  }

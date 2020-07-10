@@ -7,6 +7,9 @@ import Paper from '@material-ui/core/Paper';
 import { Typography } from '@material-ui/core';
 
 const { exec } = window.require('child_process');
+const fs = window.require('fs');
+const path = window.require('path');
+const validator = require('jsonschema').Validator;
 
 const styles = theme => ({
   button: {
@@ -38,7 +41,30 @@ class BuildComponent extends React.Component {
     this.onBuildButtonClick = this.onBuildButtonClick.bind(this);
   }
 
+  bin2string(array){
+    var result = "";
+    for(var i = 0; i < array.length; ++i){
+      result+= (String.fromCharCode(array[i]));
+    }
+    return result;
+  }
+
   onBuildButtonClick() {
+    // ---
+    var mod_spec = fs.readFileSync(this.props.module.path + '/module_specification.json', 'utf8');
+    const app = window.require('electron').remote.app;
+    var basepath = app.getAppPath();
+    var filepath = `${path.join(basepath, "/public/module_spec_schema.json")}`;
+    var schema = fs.readFileSync(filepath);
+    var string_schema = this.bin2string(schema);
+    console.dir(string_schema);
+
+    var v = new validator();
+    v.addSchema(string_schema);
+    console.log(v.validate(mod_spec, string_schema).errors);
+
+    //---
+
     const dockerBuildCommand = `docker build -t ${this.props.module.name} .`;
     console.log('Docker Build Command', dockerBuildCommand);
     this.setState({ build: { inProgress: true, isSuccess: null, log: `Building module ...\n`} });
