@@ -6,7 +6,7 @@
   "private": true,
   "devDependencies": {
     "cross-env": "5.2.0",
-    "electron": "7.2.4",
+    "electron": "7.3.2",
     "electron-builder": "^21.2.0",
     "electron-log": "^3.0.7",
     "react": "^16.8.6",
@@ -21,7 +21,7 @@
     "fs-extra": "^8.0.1",
     "jslint": "^0.12.1",
     "prettier": "^1.4.4",
-    "react-scripts": "^3.3.0",
+    "react-scripts": "^3.4.1",
     "toastr": "^2.1.4",
     "wait-on": "3.3.0"
   },

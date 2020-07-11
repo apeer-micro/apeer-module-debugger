@@ -16,35 +16,31 @@ const styles = theme => ({
   }
 });
 
-const { ipcRenderer } = window.require('electron');
+const { remote } = window.require('electron')
 const fs = window.require('fs');
 const path = window.require('path');
 
 class StartComponent extends React.Component {
   constructor(props){
     super(props);
-    this.folderSelected = this.folderSelected.bind(this);
-    ipcRenderer.on('selected-folder', this.folderSelected);
   }
 
   openFolder() {
-    ipcRenderer.send('open-folder');
-  }
+    remote.dialog.showOpenDialog({ properties: ['openDirectory'] }).then(result => {
+      let [moduleFolderPath] = result.filePaths;
+      const files = fs.readdirSync(moduleFolderPath);
+      let module = {
+        name: path.basename(moduleFolderPath),
+        path: moduleFolderPath,
+        files: files
+      };
 
-  folderSelected(event, paths) {
-    let [moduleFolderPath] = paths;
-    const files = fs.readdirSync(moduleFolderPath);
-    let module = {
-      name: path.basename(moduleFolderPath),
-      path: moduleFolderPath,
-      files: files
-    };
-
-    if (files.find(x => x === 'DockerFile' || x === 'module_specification.json')) {
-      this.props.onModuleSelected(module)
-    } else{
-      setTimeout(() => toastr.error(`This is not a valid module folders`), 300);
-    }
+      if (files.find(x => x === 'DockerFile' || x === 'module_specification.json')) {
+        this.props.onModuleSelected(module)
+      } else{
+        setTimeout(() => toastr.error(`This is not a valid module folders`), 300);
+      }
+    })
   }
 
   render() {
