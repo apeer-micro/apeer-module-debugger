@@ -1,14 +1,11 @@
 const electron = require('electron');
 // Module to control application life.
 const app = electron.app;
-const ipcMain = electron.ipcMain;
-const dialog = electron.dialog;
 
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 
 const path = require('path');
-const url = require('url');
 const isDev = require("electron-is-dev");
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -67,17 +64,3 @@ app.on('activate', function () {
         createWindow()
     }
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
-
-ipcMain.on('open-folder', event => {
-    dialog.showOpenDialog(
-      {
-        properties: ['openDirectory']
-      },
-      path => {
-        event.sender.send('selected-folder', path);
-      }
-    );
-  });
