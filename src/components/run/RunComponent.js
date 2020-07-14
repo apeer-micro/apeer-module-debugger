@@ -74,9 +74,9 @@ class RunComponent extends React.Component {
     const allLines = data.toString().split(/\r\n|\n/);
 
     allLines.forEach(line => {
-      const index = line.indexOf("adk.set_file_output(");
-      if (index != -1) {
-        let code_output = line.split(/adk.set_file_output\((.*?),/)[1];
+      const regx_set_output = new RegExp("adk.set(.*?)_output"); // matching adk.set_output or adk.set_file_output in apeer_main.py
+      if (regx_set_output.test(line)) {
+        let code_output = line.split(/adk.set(.*?)_output\((.*?),/)[2];
         code_output = code_output.substring(1, code_output.length-1);
         if(!keys.find(o => o === code_output)){
           errors.push(`Output ${code_output} in apeer_main.py is not found in spec.outputs in module_specification.json`)
@@ -96,7 +96,7 @@ class RunComponent extends React.Component {
         this.UpdateLog(`Error: ${e}\n`);
       });
 
-      setTimeout(() => toastr.error(`Module run failed`), 300);
+      setTimeout(() => toastr.error(`Module run failed due to wrong output name`), 300);
       return;
     }
 
