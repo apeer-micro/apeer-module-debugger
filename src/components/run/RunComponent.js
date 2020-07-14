@@ -55,12 +55,53 @@ class RunComponent extends React.Component {
 
     this.onRunButtonClick = this.onRunButtonClick.bind(this);
     this.openOutputFolder = this.openOutputFolder.bind(this);
+    this.checkOutputValues = this.checkOutputValues.bind(this);
   }
 
+
+  checkOutputValues() {
+    // check apeer_main.py and module_specification
+    const files = fs.readdirSync(this.props.module.path);
+    const errors = [];
+    if (!files.find(x => x === 'apeer_main.py')) {
+      console.warn("cannot check output values");
+      return;
+    }
+
+    var keys = Object.keys(this.state.json.spec.outputs);
+    const main_file = `${this.props.module.path}/apeer_main.py`;
+    const data = fs.readFileSync(main_file, "utf8");
+    const allLines = data.toString().split(/\r\n|\n/);
+
+    allLines.forEach(line => {
+      const regx_set_output = new RegExp("adk.set(.*?)_output"); // matching adk.set_output or adk.set_file_output in apeer_main.py
+      if (regx_set_output.test(line)) {
+        let code_output = line.split(/adk.set(.*?)_output\((.*?),/)[2];
+        code_output = code_output.substring(1, code_output.length-1);
+        if(!keys.find(o => o === code_output)){
+          errors.push(`Output ${code_output} in apeer_main.py is not found in spec.outputs in module_specification.json`)
+        }
+      }
+    });
+
+    return errors;
+  }
+
+
   onRunButtonClick(inputs) {
+    const errors = this.checkOutputValues();
+    console.dir(errors);
+    if(errors.length > 0){
+      errors.forEach(e => {
+        this.UpdateLog(`Error: ${e}\n`);
+      });
+
+      setTimeout(() => toastr.error(`Module run failed due to wrong output name`), 300);
+      return;
+    }
+
     this.setState({ run: { inProgress: true, log: 'Running module ...\n', isSuccess: null } });
     this.props.onRunChange(this.state.run);
-    console.dir(this.state.run);
     !fs.existsSync(this.state.inputFolder) && fs.mkdirSync(this.state.inputFolder);
     !fs.existsSync(this.state.outputFolder) && fs.mkdirSync(this.state.outputFolder);
     fs.emptyDir(this.state.outputFolder);
@@ -69,7 +110,6 @@ class RunComponent extends React.Component {
     inputs.forEach(input => {
       switch (input.type) {
         case 'file':
-          console.dir(input.value);
           var fullpath = input.value[0].path;
           var filename = path.basename(fullpath);
           envVariable += ',"' + input.name + '":"/input/' + filename + '"';

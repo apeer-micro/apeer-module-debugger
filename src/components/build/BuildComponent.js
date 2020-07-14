@@ -34,6 +34,7 @@ class BuildComponent extends React.Component {
     super(props);
     this.state = {
       build: this.props.build,
+      code_outputs: [],
     };
     this.onBuildButtonClick = this.onBuildButtonClick.bind(this);
   }
@@ -41,7 +42,7 @@ class BuildComponent extends React.Component {
   onBuildButtonClick() {
     const dockerBuildCommand = `docker build -t ${this.props.module.name} .`;
     console.log('Docker Build Command', dockerBuildCommand);
-    this.setState({ build: { inProgress: true, isSuccess: null, log: `Building module ...\n`} });
+    this.setState({ build: { inProgress: true, isSuccess: null, log: `Building module ...\n` } });
     this.props.onBuildChange(this.state.build);
 
     const child = exec(dockerBuildCommand, {
@@ -110,8 +111,8 @@ class BuildComponent extends React.Component {
               To build module and see the build logs, click on Build
             </Typography>
           ) : (
-            <pre className={classes.pre}>{this.state.build.log}</pre>
-          )}
+              <pre className={classes.pre}>{this.state.build.log}</pre>
+            )}
         </Paper>
       </React.Fragment>
     );
