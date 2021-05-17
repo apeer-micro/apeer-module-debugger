@@ -30,7 +30,7 @@ class StartComponent extends React.Component {
       let [moduleFolderPath] = result.filePaths;
       const files = fs.readdirSync(moduleFolderPath);
       let module = {
-        name: path.basename(moduleFolderPath),
+        name: path.basename(moduleFolderPath).toLowerCase(),
         path: moduleFolderPath,
         files: files
       };
