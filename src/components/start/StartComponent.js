@@ -21,13 +21,13 @@ const fs = window.require('fs');
 const path = window.require('path');
 
 class StartComponent extends React.Component {
-  constructor(props){
-    super(props);
-  }
 
   openFolder() {
     remote.dialog.showOpenDialog({ properties: ['openDirectory'] }).then(result => {
       let [moduleFolderPath] = result.filePaths;
+      if (moduleFolderPath === null || moduleFolderPath === undefined) {
+        return;
+      }
       const files = fs.readdirSync(moduleFolderPath);
       let module = {
         name: path.basename(moduleFolderPath).toLowerCase(),
