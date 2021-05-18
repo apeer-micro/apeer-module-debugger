@@ -28,9 +28,12 @@ class StartComponent extends React.Component {
   openFolder() {
     remote.dialog.showOpenDialog({ properties: ['openDirectory'] }).then(result => {
       let [moduleFolderPath] = result.filePaths;
+      if (moduleFolderPath === null || moduleFolderPath === undefined) {
+        return;
+      }
       const files = fs.readdirSync(moduleFolderPath);
       let module = {
-        name: path.basename(moduleFolderPath),
+        name: path.basename(moduleFolderPath).toLowerCase(),
         path: moduleFolderPath,
         files: files
       };
