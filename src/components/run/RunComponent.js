@@ -107,15 +107,20 @@ class RunComponent extends React.Component {
     fs.emptyDir(this.state.outputFolder);
 
     let envVariable = '{"WFE_output_params_file":"wfe_module_params_1_1.json"';
+    console.dir(inputs);
     inputs.forEach(input => {
       switch (input.type) {
         case 'file':
-          var fullpath = input.value[0].path;
-          var filename = path.basename(fullpath);
-          envVariable += ',"' + input.name + '":"/input/' + filename + '"';
-          var dest = path.join(this.state.inputFolder, filename).toString();
-          if (!fs.existsSync(dest)) {
-            fs.copyFileSync(fullpath, path.join(this.state.inputFolder, filename).toString());
+          if(input.value[0]){
+            var fullpath = input.value[0].path;
+            var filename = path.basename(fullpath);
+            envVariable += ',"' + input.name + '":"/input/' + filename + '"';
+            var dest = path.join(this.state.inputFolder, filename).toString();
+            if (!fs.existsSync(dest)) {
+              fs.copyFileSync(fullpath, path.join(this.state.inputFolder, filename).toString());
+            }
+          }else{
+            setTimeout(() => toastr.warning(`No input provided for ${input.name}`), 300);
           }
           break;
         case 'list[file]':
