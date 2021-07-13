@@ -64,8 +64,9 @@ class RunComponent extends React.Component {
     const files = fs.readdirSync(this.props.module.path);
     const errors = [];
     if (!files.find(x => x === 'apeer_main.py')) {
-      console.warn("cannot check output values");
-      return;
+      console.warn("apeer_main.py file not found, cannot validate output values");
+      setTimeout(() => toastr.warning(`apeer_main.py file not found, cannot validate output values`), 300);
+      return errors;
     }
 
     var keys = Object.keys(this.state.json.spec.outputs);
@@ -74,7 +75,7 @@ class RunComponent extends React.Component {
     const allLines = data.toString().split(/\r\n|\n/);
 
     allLines.forEach(line => {
-      const regx_set_output = new RegExp("adk.set(.*?)_output"); // matching adk.set_output or adk.set_file_output in apeer_main.py
+      const regx_set_output = new RegExp("adk.set(.*?)_output"); // matching the adk.set_output or adk.set_file_output in apeer_main.py
       if (regx_set_output.test(line)) {
         let code_output = line.split(/adk.set(.*?)_output\((.*?),/)[2];
         code_output = code_output.substring(1, code_output.length-1);
@@ -91,7 +92,7 @@ class RunComponent extends React.Component {
   onRunButtonClick(inputs) {
     const errors = this.checkOutputValues();
     console.dir(errors);
-    if(errors.length > 0){
+    if(errors && errors.length > 0){
       errors.forEach(e => {
         this.UpdateLog(`Error: ${e}\n`);
       });
