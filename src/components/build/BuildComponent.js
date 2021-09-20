@@ -41,7 +41,7 @@ class BuildComponent extends React.Component {
 
   onBuildButtonClick() {
     const current_os = `${window.clientInformation["platform"]}`;
-    const env_variable = (current_os=='MacIntel') ? `/usr/local/bin/docker` : `docker`;
+    const env_variable = (current_os.indexOf('Mac') !== -1) ? `/usr/local/bin/docker` : `docker`;
     const dockerBuildCommand = `${env_variable} build -t ${this.props.module.name} .`;    
     console.log('Docker Build Command', dockerBuildCommand);
     this.setState({ build: { inProgress: true, isSuccess: null, log: `Building module ...\n` } });
