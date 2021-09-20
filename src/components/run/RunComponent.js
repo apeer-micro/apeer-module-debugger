@@ -152,8 +152,10 @@ class RunComponent extends React.Component {
     });
 
     envVariable += '}';
+    const current_os = `${window.clientInformation["platform"]}`;
+    const env_variable = (current_os.indexOf('Mac') !== -1) ? `/usr/local/bin/docker` : `docker`;
     let dockerRunCommand =
-      'docker run -v ' +
+      `${env_variable} run -v ` +
       this.state.outputFolder +
       ':/output -v ' +
       this.state.inputFolder +
