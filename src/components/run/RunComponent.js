@@ -18,12 +18,12 @@ const { shell } = window.require('electron');
 
 const styles = theme => ({
   button: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(1)
   },
 
   main: {
     padding: theme.spacing(3, 2),
-    margin: theme.spacing(1),
+    margin: theme.spacing(1)
   },
 
   pre: {
@@ -40,8 +40,7 @@ class RunComponent extends React.Component {
       var specFile = path.join(this.props.module.path, 'module_specification.json');
       let rawData = fs.readFileSync(specFile);
       json = JSON.parse(rawData);
-    }
-    catch (e) {
+    } catch (e) {
       specError = e;
     }
 
@@ -58,29 +57,33 @@ class RunComponent extends React.Component {
     this.checkOutputValues = this.checkOutputValues.bind(this);
   }
 
-
   checkOutputValues() {
     // check apeer_main.py and module_specification
     const files = fs.readdirSync(this.props.module.path);
     const errors = [];
     if (!files.find(x => x === 'apeer_main.py')) {
-      console.warn("apeer_main.py file not found, cannot validate output values");
-      setTimeout(() => toastr.warning(`apeer_main.py file not found, cannot validate output values`), 300);
+      console.warn('apeer_main.py file not found, cannot validate output values');
+      setTimeout(
+        () => toastr.warning(`apeer_main.py file not found, cannot validate output values`),
+        300
+      );
       return errors;
     }
 
     var keys = Object.keys(this.state.json.spec.outputs);
     const main_file = `${this.props.module.path}/apeer_main.py`;
-    const data = fs.readFileSync(main_file, "utf8");
+    const data = fs.readFileSync(main_file, 'utf8');
     const allLines = data.toString().split(/\r\n|\n/);
 
     allLines.forEach(line => {
-      const regx_set_output = new RegExp("adk.set(.*?)_output"); // matching the adk.set_output or adk.set_file_output in apeer_main.py
+      const regx_set_output = new RegExp('adk.set(.*?)_output'); // matching the adk.set_output or adk.set_file_output in apeer_main.py
       if (regx_set_output.test(line)) {
         let code_output = line.split(/adk.set(.*?)_output\((.*?),/)[2];
-        code_output = code_output.substring(1, code_output.length-1);
-        if(!keys.find(o => o === code_output)){
-          errors.push(`Output ${code_output} in apeer_main.py is not found in spec.outputs in module_specification.json`)
+        code_output = code_output.substring(1, code_output.length - 1);
+        if (!keys.find(o => o === code_output)) {
+          errors.push(
+            `Output ${code_output} in apeer_main.py is not found in spec.outputs in module_specification.json`
+          );
         }
       }
     });
@@ -88,11 +91,10 @@ class RunComponent extends React.Component {
     return errors;
   }
 
-
   onRunButtonClick(inputs) {
     const errors = this.checkOutputValues();
     console.dir(errors);
-    if(errors && errors.length > 0){
+    if (errors && errors.length > 0) {
       errors.forEach(e => {
         this.UpdateLog(`Error: ${e}\n`);
       });
@@ -112,7 +114,7 @@ class RunComponent extends React.Component {
     inputs.forEach(input => {
       switch (input.type) {
         case 'file':
-          if(input.value[0]){
+          if (input.value[0]) {
             var fullpath = input.value[0].path;
             var filename = path.basename(fullpath);
             envVariable += ',"' + input.name + '":"/input/' + filename + '"';
@@ -120,7 +122,7 @@ class RunComponent extends React.Component {
             if (!fs.existsSync(dest)) {
               fs.copyFileSync(fullpath, path.join(this.state.inputFolder, filename).toString());
             }
-          }else{
+          } else {
             setTimeout(() => toastr.warning(`No input provided for ${input.name}`), 300);
           }
           break;
@@ -152,13 +154,13 @@ class RunComponent extends React.Component {
     });
 
     envVariable += '}';
-    const current_os = `${window.clientInformation["platform"]}`;
-    const env_variable = (current_os.indexOf('Mac') !== -1) ? `/usr/local/bin/docker` : `docker`;
+    const current_os = `${window.clientInformation['platform']}`;
+    const env_variable = current_os.indexOf('Mac') !== -1 ? `/usr/local/bin/docker` : `docker`;
     let dockerRunCommand =
       `${env_variable} run -v ` +
-      this.state.outputFolder +
+      `'${this.state.outputFolder}'` +
       ':/output -v ' +
-      this.state.inputFolder +
+      `'${this.state.inputFolder}'` +
       ":/input:ro -e WFE_INPUT_JSON='" +
       envVariable +
       "' " +
@@ -166,7 +168,7 @@ class RunComponent extends React.Component {
 
     // if windows
     if (/^win/i.test(process.platform)) {
-      console.dir("windows");
+      console.dir('windows');
       dockerRunCommand = dockerRunCommand.replace(/\\([\s\S])|(")/g, '\\$1$2');
       dockerRunCommand = dockerRunCommand.replace(/'/g, '"'); // for windows replace single quote to double quotes
     }
@@ -238,46 +240,41 @@ class RunComponent extends React.Component {
             />
             <div>
               <Link variant="body1" href="#" onClick={this.openOutputFolder}>
-                Open Output Folder
-                &nbsp;
+                Open Output Folder &nbsp;
                 <img src={linkIcon} className="pl-2" alt="test" />
               </Link>
 
               {this.state.run.log === '' || !this.state.run.log ? (
-                <Typography variant='body1'>
+                <Typography variant="body1">
                   To see module run logs, select the module inputs and click on run
                 </Typography>
               ) : (
-                  ''
-                )}
+                ''
+              )}
             </div>
             <pre className={classes.pre}>{this.state.run.log}</pre>
           </div>
         );
-      }
-      else {
+      } else {
         body = (
           <React.Fragment>
-            <span>Error in module specification file, Please rebuild the module after fixing it</span>
+            <span>
+              Error in module specification file, Please rebuild the module after fixing it
+            </span>
             <pre className={classes.pre}>{this.state.specError.message}</pre>
             <pre className={classes.pre}>{this.state.specError.stack}</pre>
           </React.Fragment>
         );
       }
-    }
-    else {
+    } else {
       body = (
         <span className="text-white m-2 row">
           Build the module successfully to start running it.
-      </span>
+        </span>
       );
     }
 
-    return (
-      <Paper className={classes.main}>
-        {body}
-      </Paper>
-    );
+    return <Paper className={classes.main}>{body}</Paper>;
   }
 }
 
