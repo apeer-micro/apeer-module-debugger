@@ -6,7 +6,7 @@
   "private": true,
   "devDependencies": {
     "cross-env": "5.2.0",
-    "electron": "9.4.0",
+    "electron": "13.6.6",
     "electron-builder": "^21.2.0",
     "electron-log": "^3.0.7",
     "react": "^16.8.6",
