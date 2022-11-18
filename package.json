@@ -21,7 +21,7 @@
     "fs-extra": "^8.0.1",
     "jslint": "^0.12.1",
     "prettier": "^1.4.4",
-    "react-scripts": "^3.4.1",
+    "react-scripts": "^5.0.1",
     "toastr": "^2.1.4",
     "wait-on": "3.3.0"
   },
